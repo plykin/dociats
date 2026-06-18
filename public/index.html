@@ -429,7 +429,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
             <input class="form-input padded" id="stadtInput" type="text"
               placeholder="Stadt oder PLZ eingeben" autocomplete="off"
               oninput="onCityInput()" />
-            <div class="autocomplete-dropdown" id="stadtDropdown"></div>
           </div>
         </div>
       </div>
@@ -617,7 +616,13 @@ function toggleMulti(el, s) {
 function selectSingle(el, gid, s) {
   document.getElementById(gid).querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
   el.classList.add('selected');
-  markAnswered(s);
+  if (s === 9) {
+    answered[9] = !!(document.getElementById('empGrid').querySelector('.selected') &&
+                     document.getElementById('t9b').querySelector('.selected'));
+    if (step === 9) updateBtn();
+  } else {
+    markAnswered(s);
+  }
 }
 
 function setApprob(v) {
@@ -633,58 +638,66 @@ function toggleEmp(el) {
   if (step === 9) updateBtn();
 }
 
-// Override selectSingle for t9b to also check emp
-const _origSelectSingle = selectSingle;
-function selectSingle(el, gid, s) {
-  document.getElementById(gid).querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-  el.classList.add('selected');
-  if (s === 9) {
-    answered[9] = !!(document.getElementById('empGrid').querySelector('.selected') &&
-                     document.getElementById('t9b').querySelector('.selected'));
-    if (step === 9) updateBtn();
-  } else {
-    markAnswered(s);
-  }
-}
+// ===== CITY AUTOCOMPLETE =====
+// Dropdown lives on <body> to escape all scroll/overflow containers
+const acDropdown = document.createElement('div');
+acDropdown.id = 'stadtDropdown';
+acDropdown.className = 'autocomplete-dropdown';
+document.body.appendChild(acDropdown);
 
 let acHighlighted = -1;
 let acDebounce = null;
 
 function onCityInput() {
-  const input = document.getElementById('stadtInput');
-  const q = input.value.trim();
+  const q = document.getElementById('stadtInput').value.trim();
   answered[8] = q.length > 1;
   if (step === 8) updateBtn();
   clearTimeout(acDebounce);
   if (q.length < 2) { closeAc(); return; }
-  acDebounce = setTimeout(() => fetchCities(q), 220);
+  acDebounce = setTimeout(() => fetchCities(q), 250);
 }
 
 async function fetchCities(q) {
   const input = document.getElementById('stadtInput');
-  const dropdown = document.getElementById('stadtDropdown');
   try {
-    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=de&limit=8&countrycodes=de&layer=city&layer=district`;
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=de&limit=8&countrycodes=de`;
     const res = await fetch(url);
     const json = await res.json();
-    const results = json.features
+    const seen = new Set();
+    const results = (json.features || [])
       .map(f => {
         const p = f.properties;
-        return [p.name, p.state].filter(Boolean).join(', ');
+        // Only show cities/towns/villages
+        if (!['city','town','village','district','borough'].includes(p.osm_value) &&
+            !['city','town','village','district','borough'].includes(p.type)) return null;
+        const label = p.city || p.name;
+        const state = p.state || '';
+        return label ? [label, state].filter(Boolean).join(', ') : null;
       })
-      .filter((v, i, a) => v && a.indexOf(v) === i);
+      .filter(v => v && !seen.has(v) && seen.add(v));
+
     if (!results.length) { closeAc(); return; }
-    // Position relative to input, escaping overflow-y:auto clip
+
     const rect = input.getBoundingClientRect();
-    dropdown.style.top = (rect.bottom + 3) + 'px';
-    dropdown.style.left = rect.left + 'px';
-    dropdown.style.width = rect.width + 'px';
-    dropdown.innerHTML = results.map((c, i) =>
-      `<div class="autocomplete-item" data-idx="${i}" onclick="pickCity('${c.replace(/'/g, "\\'")}')"> ${c}</div>`
+    acDropdown.style.top    = (rect.bottom + 3) + 'px';
+    acDropdown.style.left   = rect.left + 'px';
+    acDropdown.style.width  = rect.width + 'px';
+    acDropdown.innerHTML = results.map((c, i) =>
+      `<div class="autocomplete-item" data-idx="${i}">${c}</div>`
     ).join('');
-    dropdown.classList.add('open');
+    acDropdown.classList.add('open');
     acHighlighted = -1;
-  } catch { closeAc(); }
+
+    acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+      item.addEventListener('mousedown', e => {
+        e.preventDefault(); // keep focus on input
+        pickCity(item.textContent.trim());
+      });
+    });
+  } catch(err) {
+    console.error('City autocomplete error:', err);
+    closeAc();
+  }
 }
 
 function pickCity(city) {
@@ -696,9 +709,8 @@ function pickCity(city) {
 }
 
 function closeAc() {
-  const d = document.getElementById('stadtDropdown');
-  d.classList.remove('open');
-  d.innerHTML = '';
+  acDropdown.classList.remove('open');
+  acDropdown.innerHTML = '';
   acHighlighted = -1;
 }
 
