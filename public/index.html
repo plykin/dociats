@@ -489,7 +489,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <input class="form-input" id="telefonInput" type="tel" placeholder="+49 ..." />
           <div class="field-error" id="telefonError">Bitte geben Sie eine gültige Telefonnummer ein.</div>
         </div>
-        <div class="privacy-note">Mit der Registrierung stimmen Sie unseren <a>Nutzungsbedingungen</a> und der <a>Datenschutzerklärung</a> zu.</div>
+        <div style="margin-bottom:12px">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="consentCheck" onchange="checkReg()" style="margin-top:3px;flex-shrink:0;accent-color:#2a7de1;width:15px;height:15px;" />
+            <span style="font-size:11.5px;color:#4a6380;line-height:1.55;">
+              Ich habe die <a href="/datenschutz.html" target="_blank" style="color:#2a7de1;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Vermittlung von Stellenangeboten zu. Ich stimme den <a href="/nutzungsbedingungen.html" target="_blank" style="color:#2a7de1;">Nutzungsbedingungen</a> zu.
+            </span>
+          </label>
+        </div>
         <div class="trust-badge">
           <span class="trust-icon">🔒</span>
           <span class="trust-text">Ihre Daten sind bei uns in sicheren Händen. Wir garantieren eine vertrauliche Verarbeitung nach den Vorgaben der DSGVO.</span>
@@ -718,7 +725,8 @@ function checkReg() {
   const v = document.getElementById('vornameInput').value.trim();
   const n = document.getElementById('nachnameInput').value.trim();
   const e = document.getElementById('emailInput').value.trim();
-  answered[10] = v && n && e.includes('@') && e.indexOf('.', e.indexOf('@')) > 0;
+  const consent = document.getElementById('consentCheck').checked;
+  answered[10] = v && n && e.includes('@') && e.indexOf('.', e.indexOf('@')) > 0 && consent;
   if (step === 10) updateBtn();
 }
 
