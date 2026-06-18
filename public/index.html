@@ -392,6 +392,25 @@
 </style>
 </head>
 <body>
+<!-- Hidden Netlify form — required for Netlify Forms to detect and register the form -->
+<form name="leads" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="bot-field" />
+  <input type="text" name="timestamp" />
+  <input type="text" name="einrichtung" />
+  <input type="text" name="position" />
+  <input type="text" name="fachgebiet" />
+  <input type="text" name="approbation" />
+  <input type="text" name="studium" />
+  <input type="text" name="sprachniveau" />
+  <input type="text" name="fachsprachpruefung" />
+  <input type="text" name="stadt" />
+  <input type="text" name="beschaeftigung" />
+  <input type="text" name="startdatum" />
+  <input type="text" name="vorname" />
+  <input type="text" name="nachname" />
+  <input type="email" name="email" />
+  <input type="tel" name="telefon" />
+</form>
 
 <div class="funnel-wrapper">
   <!-- SIDEBAR (desktop) -->
@@ -963,10 +982,29 @@ async function submitForm() {
   btn.textContent = 'Wird gesendet…';
 
   try {
-    const res = await fetch('/api/leads', {
+    const body = new URLSearchParams({
+      'form-name': 'leads',
+      'bot-field': '',
+      timestamp: payload.timestamp,
+      einrichtung: (payload.einrichtung || []).join(', '),
+      position: (payload.position || []).join(', '),
+      fachgebiet: (payload.fachgebiet || []).join(', '),
+      approbation: payload.approbation || '',
+      studium: payload.studium || '',
+      sprachniveau: payload.sprachniveau || '',
+      fachsprachpruefung: payload.fachsprachpruefung || '',
+      stadt: payload.stadt || '',
+      beschaeftigung: (payload.beschaeftigung || []).join(', '),
+      startdatum: payload.startdatum || '',
+      vorname: payload.vorname || '',
+      nachname: payload.nachname || '',
+      email: payload.email || '',
+      telefon: payload.telefon || ''
+    });
+    const res = await fetch('/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
     });
     if (!res.ok) throw new Error('Server error');
     showSuccess();
