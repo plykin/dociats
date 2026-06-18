@@ -268,6 +268,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <input type="text" name="nachname" />
   <input type="email" name="email" />
   <input type="tel" name="telefon" />
+  <input type="text" name="consent_datenschutz" />
+  <input type="text" name="consent_nutzungsbedingungen" />
+  <input type="text" name="consent_timestamp" />
+  <input type="text" name="datenschutz_version" />
+  <input type="text" name="nutzungsbedingungen_version" />
 </form>
 
 <div class="shell">
@@ -488,13 +493,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <input class="form-input" id="telefonInput" type="tel" placeholder="+49 ..." />
           <div class="field-error" id="telefonError">Bitte geben Sie eine gültige Telefonnummer ein.</div>
         </div>
-        <div style="margin-bottom:12px">
+        <div style="margin-bottom:8px">
           <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
-            <input type="checkbox" id="consentCheck" onchange="checkReg()" style="margin-top:3px;flex-shrink:0;accent-color:#2a7de1;width:15px;height:15px;" />
+            <input type="checkbox" id="consentDatenschutz" onchange="checkReg()" style="margin-top:3px;flex-shrink:0;accent-color:#2a7de1;width:15px;height:15px;" />
             <span style="font-size:11.5px;color:#4a6380;line-height:1.55;">
-              Ich habe die <a href="/datenschutz.html" target="_blank" style="color:#2a7de1;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zur Vermittlung von Stellenangeboten zu. Ich stimme den <a href="/nutzungsbedingungen.html" target="_blank" style="color:#2a7de1;">Nutzungsbedingungen</a> zu.
+              Ich habe die <a href="/datenschutz.html" target="_blank" style="color:#2a7de1;">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner personenbezogenen Daten zum Zweck der Stellenvermittlung gemäß Art. 6 Abs. 1 lit. a DSGVO zu. <span style="color:#c0392b">*</span>
             </span>
           </label>
+          <div class="field-error" id="consentDatenschutzError" style="margin-left:25px;">Bitte stimmen Sie zu, um fortzufahren.</div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+            <input type="checkbox" id="consentNutzung" onchange="checkReg()" style="margin-top:3px;flex-shrink:0;accent-color:#2a7de1;width:15px;height:15px;" />
+            <span style="font-size:11.5px;color:#4a6380;line-height:1.55;">
+              Ich akzeptiere die <a href="/nutzungsbedingungen.html" target="_blank" style="color:#2a7de1;">Nutzungsbedingungen</a> von Docia. <span style="color:#c0392b">*</span>
+            </span>
+          </label>
+          <div class="field-error" id="consentNutzungError" style="margin-left:25px;">Bitte stimmen Sie zu, um fortzufahren.</div>
         </div>
         <div class="trust-badge">
           <span class="trust-icon">🔒</span>
@@ -742,8 +757,9 @@ function checkReg() {
   const v = document.getElementById('vornameInput').value.trim();
   const n = document.getElementById('nachnameInput').value.trim();
   const e = document.getElementById('emailInput').value.trim();
-  const consent = document.getElementById('consentCheck').checked;
-  answered[10] = v && n && e.includes('@') && e.indexOf('.', e.indexOf('@')) > 0 && consent;
+  const cd = document.getElementById('consentDatenschutz').checked;
+  const cn = document.getElementById('consentNutzung').checked;
+  answered[10] = v && n && e.includes('@') && e.indexOf('.', e.indexOf('@')) > 0 && cd && cn;
   if (step === 10) updateBtn();
 }
 
@@ -777,6 +793,12 @@ async function doSubmit() {
   let valid = true;
 
   if (!vorname || !nachname) { alert('Bitte geben Sie Vor- und Nachname ein.'); return; }
+
+  const cd = document.getElementById('consentDatenschutz').checked;
+  const cn = document.getElementById('consentNutzung').checked;
+  document.getElementById('consentDatenschutzError').classList.toggle('show', !cd);
+  document.getElementById('consentNutzungError').classList.toggle('show', !cn);
+  if (!cd || !cn) return;
 
   const emailOk = email.includes('@') && email.indexOf('.', email.indexOf('@')) > 0;
   document.getElementById('emailInput').classList.toggle('error', !emailOk);
@@ -814,7 +836,12 @@ async function doSubmit() {
       fachgebiet: fachgebiet.join(', '), approbation, studium,
       sprachniveau, fachsprachpruefung, stadt,
       beschaeftigung: beschaeftigung.join(', '), startdatum,
-      vorname, nachname, email, telefon
+      vorname, nachname, email, telefon,
+      consent_datenschutz: 'true',
+      consent_nutzungsbedingungen: 'true',
+      consent_timestamp: new Date().toISOString(),
+      datenschutz_version: '2025-06',
+      nutzungsbedingungen_version: '2025-06'
     });
     const res = await fetch('/', {
       method: 'POST',
@@ -848,5 +875,8 @@ function showSuccess() {
 updateNav();
 updateBtn();
 </script>
+<footer style="text-align:center;padding:18px 20px;font-size:12px;color:#7a90a8;border-top:0.5px solid #d0dcea;background:#fff;">
+  © 2025 Docia GmbH &nbsp;·&nbsp; <a href="/impressum.html" style="color:#7a90a8;">Impressum</a> &nbsp;·&nbsp; <a href="/datenschutz.html" style="color:#7a90a8;">Datenschutz</a>
+</footer>
 </body>
 </html>
