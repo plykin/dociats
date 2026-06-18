@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docia – Karriere in der Medizin</title>
+<style>
+  /* ===== DESIGN TOKENS ===== */
+  :root {
+    --blue-dark: #0d2d5e;
+    --blue: #2a7de1;
+    --blue-light-bg: #e6f1fb;
+    --border: #c8d8ee;
+    --muted: #7a90a8;
+    --white: #ffffff;
+    --success: #22c55e;
+    --error: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f7fb; min-height: 100vh; color: #1a2e4a; }
+
+  /* ===== LAYOUT ===== */
+  .funnel-wrapper {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ===== SIDEBAR (desktop only) ===== */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--blue-dark);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0 24px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar-logo {
+    padding: 0 24px 28px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .sidebar-logo span { color: var(--blue); }
+
+  .sidebar-nav { flex: 1; overflow-y: auto; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); }
+  .nav-item.active { background: rgba(42,125,225,0.18); }
+
+  .nav-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .nav-item.done .nav-dot {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+  }
+  .nav-item.active .nav-dot {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
+
+  .nav-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .nav-item.active .nav-label { color: #fff; font-weight: 600; }
+  .nav-item.done .nav-label { color: rgba(255,255,255,0.7); }
+
+  .sidebar-advisor {
+    padding: 20px 24px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 16px;
+  }
+  .advisor-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .advisor-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .advisor-name { font-size: 13px; font-weight: 600; color: #fff; }
+  .advisor-title { font-size: 11px; color: rgba(255,255,255,0.55); }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f4f7fb;
+  }
+
+  /* Mobile header */
+  .mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--blue-dark);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .mobile-logo { font-size: 20px; font-weight: 800; color: #fff; }
+  .mobile-logo span { color: var(--blue); }
+  .mobile-advisor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mobile-advisor-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+  .mobile-advisor-info { display: none; }
+
+  /* Progress bar (mobile) */
+  .progress-bar-wrap {
+    display: none;
+    background: #e2eaf4;
+    height: 4px;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    transition: width 0.3s ease;
+  }
+
+  /* Step card */
+  .step-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 32px 36px 28px;
+    margin: 28px 32px;
+    box-shadow: 0 2px 12px rgba(13,45,94,0.06);
+    flex: 1;
+  }
+
+  .step-header { margin-bottom: 22px; }
+  .step-number {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  .step-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 4px;
+  }
+  .step-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ===== TILE GRID ===== */
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .tile {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #fff;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #1a2e4a;
+    line-height: 1.35;
+    user-select: none;
+  }
+  .tile:hover { border-color: var(--blue); background: var(--blue-light-bg); }
+  .tile.selected {
+    border-color: var(--blue);
+    background: var(--blue-light-bg);
+    color: var(--blue-dark);
+    font-weight: 600;
+  }
+  .tile-icon { font-size: 22px; display: block; margin-bottom: 6px; }
+
+  /* Single select tiles */
+  .tile-grid.single-select .tile.selected {
+    border-color: var(--blue);
+    background: var(--blue-light-bg);
+  }
+
+  /* ===== TEXT INPUT ===== */
+  .field-group { margin-bottom: 16px; }
+  .field-label { font-size: 13px; font-weight: 600; color: var(--blue-dark); margin-bottom: 6px; display: block; }
+  .field-input {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    color: #1a2e4a;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
+  }
+  .field-input:focus { border-color: var(--blue); }
+  .field-input.error { border-color: var(--error); }
+  .field-error { font-size: 12px; color: var(--error); margin-top: 4px; display: none; }
+  .field-error.show { display: block; }
+
+  /* ===== AUTOCOMPLETE ===== */
+  .autocomplete-wrap { position: relative; }
+  .autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(13,45,94,0.10);
+    display: none;
+  }
+  .autocomplete-dropdown.open { display: block; }
+  .autocomplete-item {
+    padding: 10px 12px;
+    font-size: 13.5px;
+    cursor: pointer;
+    color: #1a2e4a;
+    transition: background 0.1s;
+  }
+  .autocomplete-item:hover, .autocomplete-item.highlighted { background: #f2f7fe; }
+
+  /* ===== BUTTONS ===== */
+  .btn-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    gap: 12px;
+  }
+  .btn-back {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-back:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-next {
+    background: var(--blue);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-left: auto;
+    font-family: inherit;
+  }
+  .btn-next:hover { background: #1d6ccc; }
+  .btn-next:disabled { background: #a0bce0; cursor: not-allowed; }
+
+  /* ===== SUCCESS SCREEN ===== */
+  .success-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 32px;
+    flex: 1;
+  }
+  .success-screen.show { display: flex; }
+  .success-icon {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: #dcfce7;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
+  .success-title { font-size: 26px; font-weight: 800; color: var(--blue-dark); margin-bottom: 12px; }
+  .success-text { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 380px; }
+  .success-advisor {
+    margin-top: 32px;
+    background: var(--blue-light-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 360px;
+    width: 100%;
+  }
+  .success-advisor-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .success-advisor-name { font-size: 15px; font-weight: 700; color: var(--blue-dark); }
+  .success-advisor-role { font-size: 12px; color: var(--muted); }
+
+  /* ===== REGISTRATION FORM ===== */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ===== STEP VISIBILITY ===== */
+  .step { display: none; }
+  .step.active { display: block; }
+
+  /* ===== RESPONSIVE — MOBILE ===== */
+  @media (max-width: 767px) {
+    .sidebar { display: none; }
+    .mobile-header { display: flex; }
+    .progress-bar-wrap { display: block; }
+    .main-content { background: #f0f4fa; }
+    .step-card { margin: 16px 12px; padding: 22px 16px 18px; border-radius: 12px; }
+    .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .step-title { font-size: 19px; }
+    .form-row { grid-template-columns: 1fr; gap: 12px; }
+    .funnel-wrapper { flex-direction: column; }
+    .btn-row { flex-wrap: wrap; }
+    .btn-next { width: 100%; text-align: center; }
+    .btn-back { width: 100%; text-align: center; }
+  }
+
+  @media (min-width: 768px) {
+    .tile-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="funnel-wrapper">
+  <!-- SIDEBAR (desktop) -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">doc<span>ia</span></div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <!-- nav items injected by JS -->
+    </nav>
+    <div class="sidebar-advisor">
+      <div class="advisor-card">
+        <div class="advisor-avatar">AL</div>
+        <div>
+          <div class="advisor-name">Anna Liebig</div>
+          <div class="advisor-title">Docia Karriereberaterin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <div class="mobile-logo">doc<span>ia</span></div>
+      <div class="mobile-advisor">
+        <div class="mobile-advisor-avatar">AL</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+    <!-- Steps container -->
+    <div id="stepsContainer">
+
+      <!-- STEP 1: Einrichtung -->
+      <div class="step active" data-step="1" id="step1">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 1 von 10</div>
+            <div class="step-title">In welcher Einrichtung möchten Sie arbeiten?</div>
+            <div class="step-subtitle">Mehrfachauswahl möglich</div>
+          </div>
+          <div class="tile-grid" id="einrichtungGrid">
+            <div class="tile" data-value="Krankenhaus"><span class="tile-icon">🏥</span>Krankenhaus</div>
+            <div class="tile" data-value="Klinik"><span class="tile-icon">🏨</span>Klinik</div>
+            <div class="tile" data-value="Praxis"><span class="tile-icon">🩺</span>Praxis</div>
+            <div class="tile" data-value="MVZ"><span class="tile-icon">🏢</span>MVZ</div>
+            <div class="tile" data-value="Rehabilitation"><span class="tile-icon">♻️</span>Rehabilitation</div>
+            <div class="tile" data-value="Pflegeheim"><span class="tile-icon">🏡</span>Pflegeheim</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-next" onclick="nextStep(1)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Position -->
+      <div class="step" data-step="2" id="step2">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 2 von 10</div>
+            <div class="step-title">Welche Position suchen Sie?</div>
+            <div class="step-subtitle">Mehrfachauswahl möglich</div>
+          </div>
+          <div class="tile-grid" id="positionGrid">
+            <div class="tile" data-value="Assistenzarzt"><span class="tile-icon">👨‍⚕️</span>Assistenzarzt</div>
+            <div class="tile" data-value="Facharzt"><span class="tile-icon">🩻</span>Facharzt</div>
+            <div class="tile" data-value="Oberarzt"><span class="tile-icon">🔬</span>Oberarzt</div>
+            <div class="tile" data-value="Chefarzt"><span class="tile-icon">🏅</span>Chefarzt</div>
+            <div class="tile" data-value="Niederlassung"><span class="tile-icon">🏪</span>Niederlassung</div>
+            <div class="tile" data-value="Sonstiges"><span class="tile-icon">📋</span>Sonstiges</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(2)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(2)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Fachgebiet -->
+      <div class="step" data-step="3" id="step3">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 3 von 10</div>
+            <div class="step-title">Welches Fachgebiet?</div>
+            <div class="step-subtitle">Mehrfachauswahl möglich</div>
+          </div>
+          <div class="tile-grid" id="fachgebietGrid">
+            <div class="tile" data-value="Allgemeinmedizin"><span class="tile-icon">🩺</span>Allgemeinmedizin</div>
+            <div class="tile" data-value="Innere Medizin"><span class="tile-icon">❤️</span>Innere Medizin</div>
+            <div class="tile" data-value="Chirurgie"><span class="tile-icon">🔪</span>Chirurgie</div>
+            <div class="tile" data-value="Psychiatrie"><span class="tile-icon">🧠</span>Psychiatrie</div>
+            <div class="tile" data-value="Pädiatrie"><span class="tile-icon">👶</span>Pädiatrie</div>
+            <div class="tile" data-value="Gynäkologie"><span class="tile-icon">🌸</span>Gynäkologie</div>
+            <div class="tile" data-value="Radiologie"><span class="tile-icon">📡</span>Radiologie</div>
+            <div class="tile" data-value="Anästhesiologie"><span class="tile-icon">💉</span>Anästhesiologie</div>
+            <div class="tile" data-value="Neurologie"><span class="tile-icon">🧬</span>Neurologie</div>
+            <div class="tile" data-value="Dermatologie"><span class="tile-icon">🩹</span>Dermatologie</div>
+            <div class="tile" data-value="Orthopädie"><span class="tile-icon">🦴</span>Orthopädie</div>
+            <div class="tile" data-value="Sonstiges"><span class="tile-icon">➕</span>Sonstiges</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(3)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(3)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Approbation -->
+      <div class="step" data-step="4" id="step4">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 4 von 10</div>
+            <div class="step-title">Haben Sie eine Approbation?</div>
+            <div class="step-subtitle">Bitte wählen Sie eine Option</div>
+          </div>
+          <div class="tile-grid single-select" id="approbationGrid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="tile" data-value="Approbation erteilt (DE)"><span class="tile-icon">✅</span>Approbation erteilt (DE)</div>
+            <div class="tile" data-value="Berufserlaubnis"><span class="tile-icon">📄</span>Berufserlaubnis</div>
+            <div class="tile" data-value="In Beantragung"><span class="tile-icon">⏳</span>In Beantragung</div>
+            <div class="tile" data-value="Noch nicht beantragt"><span class="tile-icon">📝</span>Noch nicht beantragt</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(4)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(4)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5: Studium -->
+      <div class="step" data-step="5" id="step5">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 5 von 10</div>
+            <div class="step-title">Wo haben Sie studiert?</div>
+            <div class="step-subtitle">Bitte wählen Sie eine Option</div>
+          </div>
+          <div class="tile-grid single-select" id="studiumGrid" style="grid-template-columns: repeat(1, 1fr); max-width: 400px;">
+            <div class="tile" data-value="Deutschland"><span class="tile-icon">🇩🇪</span>Deutschland</div>
+            <div class="tile" data-value="EU / EWR"><span class="tile-icon">🇪🇺</span>EU / EWR</div>
+            <div class="tile" data-value="Nicht-EU"><span class="tile-icon">🌍</span>Nicht-EU</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(5)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(5)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6: Sprachniveau -->
+      <div class="step" data-step="6" id="step6">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 6 von 10</div>
+            <div class="step-title">Welches Sprachniveau haben Sie?</div>
+            <div class="step-subtitle">Deutschkenntnisse</div>
+          </div>
+          <div class="tile-grid single-select" id="sprachniveauGrid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="tile" data-value="B1"><span class="tile-icon">🟡</span>B1</div>
+            <div class="tile" data-value="B2"><span class="tile-icon">🟠</span>B2</div>
+            <div class="tile" data-value="C1"><span class="tile-icon">🟢</span>C1</div>
+            <div class="tile" data-value="C2"><span class="tile-icon">⭐</span>C2</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(6)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(6)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 7: Fachsprachprüfung -->
+      <div class="step" data-step="7" id="step7">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 7 von 10</div>
+            <div class="step-title">Haben Sie die Fachsprachprüfung abgelegt?</div>
+            <div class="step-subtitle">Bitte wählen Sie eine Option</div>
+          </div>
+          <div class="tile-grid single-select" id="fachsprachpruefungGrid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="tile" data-value="Ja"><span class="tile-icon">✅</span>Ja</div>
+            <div class="tile" data-value="Nein"><span class="tile-icon">❌</span>Nein</div>
+            <div class="tile" data-value="Geplant"><span class="tile-icon">📅</span>Geplant</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(7)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(7)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 8: Standort -->
+      <div class="step" data-step="8" id="step8">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 8 von 10</div>
+            <div class="step-title">In welcher Stadt möchten Sie arbeiten?</div>
+            <div class="step-subtitle">Tippen Sie eine Stadt ein</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="stadtInput">Stadt</label>
+            <div class="autocomplete-wrap">
+              <input class="field-input" id="stadtInput" type="text" placeholder="z.B. Berlin, München, Hamburg..." autocomplete="off">
+              <div class="autocomplete-dropdown" id="stadtDropdown"></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(8)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(8)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 9: Beschäftigung + Startdatum -->
+      <div class="step" data-step="9" id="step9">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 9 von 10</div>
+            <div class="step-title">Beschäftigungsart &amp; Startdatum</div>
+            <div class="step-subtitle">Mehrfachauswahl bei Beschäftigungsart möglich</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue-dark);margin-bottom:10px;">Beschäftigungsart</div>
+          <div class="tile-grid" id="beschaeftigungGrid">
+            <div class="tile" data-value="Vollzeit"><span class="tile-icon">🕐</span>Vollzeit</div>
+            <div class="tile" data-value="Teilzeit"><span class="tile-icon">🕑</span>Teilzeit</div>
+            <div class="tile" data-value="Auf Honorarbasis"><span class="tile-icon">💶</span>Auf Honorarbasis</div>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue-dark);margin:18px 0 10px;">Startdatum</div>
+          <div class="tile-grid single-select" id="startdatumGrid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="tile" data-value="Sofort"><span class="tile-icon">⚡</span>Sofort</div>
+            <div class="tile" data-value="In 1–3 Monaten"><span class="tile-icon">📅</span>In 1–3 Monaten</div>
+            <div class="tile" data-value="In 3–6 Monaten"><span class="tile-icon">🗓️</span>In 3–6 Monaten</div>
+            <div class="tile" data-value="In mehr als 6 Monaten"><span class="tile-icon">⏰</span>In mehr als 6 Monaten</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(9)">← Zurück</button>
+            <button class="btn-next" onclick="nextStep(9)">Weiter →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 10: Registrieren -->
+      <div class="step" data-step="10" id="step10">
+        <div class="step-card">
+          <div class="step-header">
+            <div class="step-number">Schritt 10 von 10</div>
+            <div class="step-title">Jetzt kostenlos registrieren</div>
+            <div class="step-subtitle">Ihre persönliche Karriereberaterin meldet sich bei Ihnen.</div>
+          </div>
+          <div class="form-row">
+            <div class="field-group">
+              <label class="field-label" for="vornameInput">Vorname *</label>
+              <input class="field-input" id="vornameInput" type="text" placeholder="Max">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="nachnameInput">Nachname *</label>
+              <input class="field-input" id="nachnameInput" type="text" placeholder="Mustermann">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="emailInput">E-Mail-Adresse *</label>
+            <input class="field-input" id="emailInput" type="email" placeholder="max.mustermann@email.de">
+            <div class="field-error" id="emailError">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="telefonInput">Telefon (optional)</label>
+            <input class="field-input" id="telefonInput" type="tel" placeholder="+49 170 1234567">
+            <div class="field-error" id="telefonError">Bitte geben Sie eine gültige Telefonnummer ein (7–15 Ziffern).</div>
+          </div>
+          <div style="margin-top:8px;padding:14px;background:var(--blue-light-bg);border-radius:8px;border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;">AL</div>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--blue-dark);">Anna Liebig</div>
+                <div style="font-size:12px;color:var(--muted);">Docia Karriereberaterin – meldet sich innerhalb von 24h</div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-back" onclick="prevStep(10)">← Zurück</button>
+            <button class="btn-next" id="submitBtn" onclick="submitForm()">Jetzt registrieren ✓</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /stepsContainer -->
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Willkommen bei Docia!</div>
+      <div class="success-text">
+        Ihre Registrierung war erfolgreich. Ihre persönliche Karriereberaterin <strong>Anna Liebig</strong> wird sich innerhalb von 24 Stunden bei Ihnen melden und gemeinsam mit Ihnen den idealen nächsten Karriereschritt planen.
+      </div>
+      <div class="success-advisor">
+        <div class="success-advisor-avatar">AL</div>
+        <div>
+          <div class="success-advisor-name">Anna Liebig</div>
+          <div class="success-advisor-role">Docia Karriereberaterin</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ===== GERMAN CITIES =====
+const GERMAN_CITIES = [
+  'Aachen','Albstadt','Aschaffenburg','Augsburg','Bamberg','Bayreuth',
+  'Bergisch Gladbach','Berlin','Bensheim','Bielefeld','Bochum','Bonn',
+  'Bottrop','Brandenburg an der Havel','Braunschweig','Bremen','Bremerhaven',
+  'Chemnitz','Coburg','Cottbus','Darmstadt','Delmenhorst','Dessau-Roßlau',
+  'Dortmund','Dresden','Duisburg','Düren','Düsseldorf','Erfurt','Erlangen',
+  'Essen','Esslingen am Neckar','Flensburg','Frankfurt am Main',
+  'Freiburg im Breisgau','Friedrichshafen','Fulda','Fürth','Gelsenkirchen',
+  'Gera','Gießen','Gladbeck','Görlitz','Göttingen','Greifswald',
+  'Gütersloh','Hagen','Halle (Saale)','Hameln','Hamm','Hanau','Hannover',
+  'Heidenheim an der Brenz','Heidelberg','Heilbronn','Herne','Hildesheim',
+  'Ingolstadt','Iserlohn','Jena','Kaiserslautern','Karlsruhe','Kassel',
+  'Kempten (Allgäu)','Kiel','Koblenz','Köln','Konstanz','Krefeld',
+  'Landshut','Leipzig','Leverkusen','Lübeck','Ludwigshafen am Rhein',
+  'Lüdenscheid','Lünen','Lüneburg','Magdeburg','Mainz','Mannheim','Marl',
+  'Marburg','Memmingen','Menden','Minden','Moers','Mönchengladbach',
+  'Mülheim an der Ruhr','München','Münster','Neubrandenburg','Neumünster',
+  'Neuss','Neu-Ulm','Norderstedt','Nordhausen','Nürnberg','Oberhausen',
+  'Offenbach am Main','Oldenburg','Osnabrück','Paderborn','Passau','Pforzheim',
+  'Plauen','Potsdam','Ratingen','Ravensburg','Recklinghausen','Remscheid',
+  'Regensburg','Reutlingen','Rosenheim','Rostock','Rüsselsheim','Saarbrücken',
+  'Salzgitter','Schweinfurt','Schwerin','Siegen','Singen (Hohentwiel)',
+  'Solingen','Stralsund','Stuttgart','Suhl','Trier','Tübingen','Ulm',
+  'Velbert','Viersen','Villingen-Schwenningen','Weimar','Wilhelmshaven',
+  'Wismar','Witten','Wolfsburg','Worms','Wuppertal','Würzburg','Zwickau'
+];
+
+// ===== STATE =====
+const state = {
+  currentStep: 1,
+  skipStudium: false,
+  answers: {
+    einrichtung: [],
+    position: [],
+    fachgebiet: [],
+    approbation: '',
+    studium: null,
+    sprachniveau: '',
+    fachsprachpruefung: '',
+    stadt: '',
+    beschaeftigung: [],
+    startdatum: '',
+    vorname: '',
+    nachname: '',
+    email: '',
+    telefon: ''
+  }
+};
+
+const STEP_LABELS = [
+  'Einrichtung','Position','Fachgebiet','Approbation',
+  'Studium','Sprachniveau','Fachsprachprüfung','Standort',
+  'Beschäftigung','Registrieren'
+];
+
+const TOTAL_STEPS = 10;
+
+// ===== STEP NAVIGATION =====
+function getVisibleSteps() {
+  // Returns array of step numbers in display order (skip 5 if skipStudium)
+  const steps = [1,2,3,4];
+  if (!state.skipStudium) steps.push(5);
+  steps.push(6,7,8,9,10);
+  return steps;
+}
+
+function getStepIndex(stepNum) {
+  return getVisibleSteps().indexOf(stepNum);
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('step' + n);
+  if (el) el.classList.add('active');
+  state.currentStep = n;
+  updateSidebar();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(from) {
+  const visible = getVisibleSteps();
+  const idx = visible.indexOf(from);
+  if (idx < visible.length - 1) {
+    showStep(visible[idx + 1]);
+  }
+}
+
+function prevStep(from) {
+  const visible = getVisibleSteps();
+  const idx = visible.indexOf(from);
+  if (idx > 0) {
+    showStep(visible[idx - 1]);
+  }
+}
+
+// ===== MULTI-SELECT TILES =====
+function initMultiSelect(gridId, stateKey) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.querySelectorAll('.tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      tile.classList.toggle('selected');
+      const val = tile.dataset.value;
+      const arr = state.answers[stateKey];
+      const i = arr.indexOf(val);
+      if (i === -1) arr.push(val);
+      else arr.splice(i, 1);
+    });
+  });
+}
+
+// ===== SINGLE-SELECT TILES =====
+function initSingleSelect(gridId, stateKey, onChange) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  grid.querySelectorAll('.tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      grid.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      state.answers[stateKey] = tile.dataset.value;
+      if (onChange) onChange(tile.dataset.value);
+    });
+  });
+}
+
+// ===== AUTOCOMPLETE =====
+function initAutocomplete() {
+  const input = document.getElementById('stadtInput');
+  const dropdown = document.getElementById('stadtDropdown');
+  let highlighted = -1;
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (!q) { closeDropdown(); return; }
+    const matches = GERMAN_CITIES.filter(c =>
+      c.toLowerCase().startsWith(q) || c.toLowerCase().includes(q)
+    ).slice(0, 8);
+    if (!matches.length) { closeDropdown(); return; }
+    dropdown.innerHTML = matches.map((c, i) =>
+      `<div class="autocomplete-item" data-idx="${i}">${c}</div>`
+    ).join('');
+    dropdown.classList.add('open');
+    highlighted = -1;
+    dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+      item.addEventListener('click', () => {
+        selectCity(item.textContent);
+      });
+    });
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = dropdown.querySelectorAll('.autocomplete-item');
+    if (e.key === 'ArrowDown') {
+      highlighted = Math.min(highlighted + 1, items.length - 1);
+      updateHighlight(items);
+      e.preventDefault();
+    } else if (e.key === 'ArrowUp') {
+      highlighted = Math.max(highlighted - 1, -1);
+      updateHighlight(items);
+      e.preventDefault();
+    } else if (e.key === 'Enter' && highlighted >= 0) {
+      selectCity(items[highlighted].textContent);
+      e.preventDefault();
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    }
+  });
+
+  input.addEventListener('blur', () => {
+    setTimeout(closeDropdown, 150);
+    state.answers.stadt = input.value.trim();
+  });
+
+  function selectCity(city) {
+    input.value = city;
+    state.answers.stadt = city;
+    closeDropdown();
+  }
+
+  function closeDropdown() {
+    dropdown.classList.remove('open');
+    dropdown.innerHTML = '';
+    highlighted = -1;
+  }
+
+  function updateHighlight(items) {
+    items.forEach((item, i) => {
+      item.classList.toggle('highlighted', i === highlighted);
+    });
+  }
+
+  // Close on outside click
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+}
+
+// ===== VALIDATION =====
+function validateEmail(email) {
+  const e = email.trim();
+  const atIdx = e.indexOf('@');
+  if (atIdx < 1) return false;
+  const afterAt = e.slice(atIdx + 1);
+  return afterAt.includes('.') && afterAt.length > 2;
+}
+
+function validatePhone(phone) {
+  if (!phone.trim()) return true; // optional
+  const stripped = phone.replace(/[\s\-().]/g, '');
+  return /^(\+|00)?[1-9]\d{6,14}$/.test(stripped);
+}
+
+// ===== SUBMIT =====
+async function submitForm() {
+  const vorname = document.getElementById('vornameInput').value.trim();
+  const nachname = document.getElementById('nachnameInput').value.trim();
+  const email = document.getElementById('emailInput').value.trim();
+  const telefon = document.getElementById('telefonInput').value.trim();
+
+  let valid = true;
+
+  if (!vorname || !nachname) {
+    alert('Bitte geben Sie Vor- und Nachname ein.');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    document.getElementById('emailInput').classList.add('error');
+    document.getElementById('emailError').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('emailInput').classList.remove('error');
+    document.getElementById('emailError').classList.remove('show');
+  }
+
+  if (telefon && !validatePhone(telefon)) {
+    document.getElementById('telefonInput').classList.add('error');
+    document.getElementById('telefonError').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('telefonInput').classList.remove('error');
+    document.getElementById('telefonError').classList.remove('show');
+  }
+
+  if (!valid) return;
+
+  state.answers.vorname = vorname;
+  state.answers.nachname = nachname;
+  state.answers.email = email;
+  state.answers.telefon = telefon;
+  state.answers.stadt = document.getElementById('stadtInput').value.trim();
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    ...state.answers
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet…';
+
+  try {
+    const res = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Server error');
+    showSuccess();
+  } catch (e) {
+    alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.');
+    btn.disabled = false;
+    btn.textContent = 'Jetzt registrieren ✓';
+  }
+}
+
+function showSuccess() {
+  document.getElementById('stepsContainer').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  // Hide sidebar nav (show completion)
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.add('done'));
+  updateProgress(true);
+}
+
+// Phone validation on blur
+document.addEventListener('DOMContentLoaded', () => {
+  const telefonInput = document.getElementById('telefonInput');
+  telefonInput.addEventListener('blur', () => {
+    const val = telefonInput.value.trim();
+    if (val && !validatePhone(val)) {
+      telefonInput.classList.add('error');
+      document.getElementById('telefonError').classList.add('show');
+    } else {
+      telefonInput.classList.remove('error');
+      document.getElementById('telefonError').classList.remove('show');
+    }
+  });
+});
+
+// ===== SIDEBAR ======
+function buildSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = STEP_LABELS.map((label, i) => {
+    const stepNum = i + 1;
+    return `<div class="nav-item" id="nav${stepNum}" data-step="${stepNum}">
+      <div class="nav-dot" id="navDot${stepNum}">${stepNum}</div>
+      <div class="nav-label">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateSidebar() {
+  const visible = getVisibleSteps();
+  STEP_LABELS.forEach((_, i) => {
+    const stepNum = i + 1;
+    const item = document.getElementById('nav' + stepNum);
+    if (!item) return;
+    item.classList.remove('active', 'done');
+
+    // hide step 5 nav item if skipped
+    if (stepNum === 5 && state.skipStudium) {
+      item.style.display = 'none';
+      return;
+    }
+    item.style.display = '';
+
+    const stepIdx = getStepIndex(stepNum);
+    const currentIdx = getStepIndex(state.currentStep);
+
+    if (stepNum === state.currentStep) {
+      item.classList.add('active');
+    } else if (stepIdx < currentIdx) {
+      item.classList.add('done');
+    }
+
+    const dot = document.getElementById('navDot' + stepNum);
+    if (dot) {
+      dot.textContent = stepIdx < currentIdx ? '✓' : stepNum;
+    }
+  });
+}
+
+function updateProgress(complete) {
+  const visible = getVisibleSteps();
+  const currentIdx = complete ? visible.length : getStepIndex(state.currentStep);
+  const pct = complete ? 100 : Math.round((currentIdx / visible.length) * 100);
+  const bar = document.getElementById('progressBar');
+  if (bar) bar.style.width = pct + '%';
+}
+
+// ===== INIT =====
+buildSidebar();
+initMultiSelect('einrichtungGrid', 'einrichtung');
+initMultiSelect('positionGrid', 'position');
+initMultiSelect('fachgebietGrid', 'fachgebiet');
+initSingleSelect('approbationGrid', 'approbation', val => {
+  state.skipStudium = (val === 'Approbation erteilt (DE)');
+  if (state.skipStudium) state.answers.studium = null;
+});
+initSingleSelect('studiumGrid', 'studium');
+initSingleSelect('sprachniveauGrid', 'sprachniveau');
+initSingleSelect('fachsprachpruefungGrid', 'fachsprachpruefung');
+initMultiSelect('beschaeftigungGrid', 'beschaeftigung');
+initSingleSelect('startdatumGrid', 'startdatum');
+initAutocomplete();
+
+updateSidebar();
+updateProgress();
+</script>
+</body>
+</html>
