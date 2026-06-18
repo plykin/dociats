@@ -521,33 +521,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </div>
 
 <script>
-// ===== GERMAN CITIES =====
-const GERMAN_CITIES = [
-  'Aachen','Albstadt','Aschaffenburg','Augsburg','Bamberg','Bayreuth',
-  'Bergisch Gladbach','Berlin','Bensheim','Bielefeld','Bochum','Bonn',
-  'Bottrop','Brandenburg an der Havel','Braunschweig','Bremen','Bremerhaven',
-  'Chemnitz','Coburg','Cottbus','Darmstadt','Delmenhorst','Dessau-Roßlau',
-  'Dortmund','Dresden','Duisburg','Düren','Düsseldorf','Erfurt','Erlangen',
-  'Essen','Esslingen am Neckar','Flensburg','Frankfurt am Main',
-  'Freiburg im Breisgau','Friedrichshafen','Fulda','Fürth','Gelsenkirchen',
-  'Gera','Gießen','Gladbeck','Görlitz','Göttingen','Greifswald',
-  'Gütersloh','Hagen','Halle (Saale)','Hameln','Hamm','Hanau','Hannover',
-  'Heidenheim an der Brenz','Heidelberg','Heilbronn','Herne','Hildesheim',
-  'Ingolstadt','Iserlohn','Jena','Kaiserslautern','Karlsruhe','Kassel',
-  'Kempten (Allgäu)','Kiel','Koblenz','Köln','Konstanz','Krefeld',
-  'Landshut','Leipzig','Leverkusen','Lübeck','Ludwigshafen am Rhein',
-  'Lüdenscheid','Lünen','Lüneburg','Magdeburg','Mainz','Mannheim','Marl',
-  'Marburg','Memmingen','Menden','Minden','Moers','Mönchengladbach',
-  'Mülheim an der Ruhr','München','Münster','Neubrandenburg','Neumünster',
-  'Neuss','Neu-Ulm','Norderstedt','Nordhausen','Nürnberg','Oberhausen',
-  'Offenbach am Main','Oldenburg','Osnabrück','Paderborn','Passau','Pforzheim',
-  'Plauen','Potsdam','Ratingen','Ravensburg','Recklinghausen','Remscheid',
-  'Regensburg','Reutlingen','Rosenheim','Rostock','Rüsselsheim','Saarbrücken',
-  'Salzgitter','Schweinfurt','Schwerin','Siegen','Singen (Hohentwiel)',
-  'Solingen','Stralsund','Stuttgart','Suhl','Trier','Tübingen','Ulm',
-  'Velbert','Viersen','Villingen-Schwenningen','Weimar','Wilhelmshaven',
-  'Wismar','Witten','Wolfsburg','Worms','Wuppertal','Würzburg','Zwickau'
-];
+// ===== CITY AUTOCOMPLETE via Photon (OpenStreetMap) =====
 
 const TOTAL = 10;
 let step = 1;
@@ -666,25 +640,38 @@ function selectSingle(el, gid, s) {
   }
 }
 
-// ===== CITY AUTOCOMPLETE =====
 let acHighlighted = -1;
+let acDebounce = null;
 
 function onCityInput() {
   const input = document.getElementById('stadtInput');
-  const dropdown = document.getElementById('stadtDropdown');
-  const q = input.value.trim().toLowerCase();
+  const q = input.value.trim();
   answered[8] = q.length > 1;
   if (step === 8) updateBtn();
-  if (!q) { closeAc(); return; }
-  const matches = GERMAN_CITIES.filter(c =>
-    c.toLowerCase().startsWith(q) || c.toLowerCase().includes(q)
-  ).slice(0, 8);
-  if (!matches.length) { closeAc(); return; }
-  dropdown.innerHTML = matches.map((c,i) =>
-    `<div class="autocomplete-item" data-idx="${i}" onclick="pickCity('${c.replace(/'/g,"\\'")}')"> ${c}</div>`
-  ).join('');
-  dropdown.classList.add('open');
-  acHighlighted = -1;
+  clearTimeout(acDebounce);
+  if (q.length < 2) { closeAc(); return; }
+  acDebounce = setTimeout(() => fetchCities(q), 220);
+}
+
+async function fetchCities(q) {
+  const dropdown = document.getElementById('stadtDropdown');
+  try {
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=de&limit=8&countrycodes=de&layer=city&layer=district`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const results = json.features
+      .map(f => {
+        const p = f.properties;
+        return [p.name, p.state].filter(Boolean).join(', ');
+      })
+      .filter((v, i, a) => v && a.indexOf(v) === i); // dedupe
+    if (!results.length) { closeAc(); return; }
+    dropdown.innerHTML = results.map((c, i) =>
+      `<div class="autocomplete-item" data-idx="${i}" onclick="pickCity('${c.replace(/'/g, "\\'")}')"> ${c}</div>`
+    ).join('');
+    dropdown.classList.add('open');
+    acHighlighted = -1;
+  } catch { closeAc(); }
 }
 
 function pickCity(city) {
