@@ -164,10 +164,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 /* ===== AUTOCOMPLETE ===== */
 .autocomplete-wrap { position: relative; }
 .autocomplete-dropdown {
-  position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+  position: fixed;
   background: #fff; border: 0.5px solid #c8d8ee; border-radius: 7px;
   box-shadow: 0 4px 14px rgba(13,45,94,0.10);
-  max-height: 220px; overflow-y: auto; z-index: 100; display: none;
+  max-height: 220px; overflow-y: auto; z-index: 1000; display: none;
 }
 .autocomplete-dropdown.open { display: block; }
 .autocomplete-item { padding: 10px 12px; font-size: 13px; cursor: pointer; color: #0d2d5e; }
@@ -661,6 +661,7 @@ function onCityInput() {
 }
 
 async function fetchCities(q) {
+  const input = document.getElementById('stadtInput');
   const dropdown = document.getElementById('stadtDropdown');
   try {
     const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=de&limit=8&countrycodes=de&layer=city&layer=district`;
@@ -671,8 +672,13 @@ async function fetchCities(q) {
         const p = f.properties;
         return [p.name, p.state].filter(Boolean).join(', ');
       })
-      .filter((v, i, a) => v && a.indexOf(v) === i); // dedupe
+      .filter((v, i, a) => v && a.indexOf(v) === i);
     if (!results.length) { closeAc(); return; }
+    // Position relative to input, escaping overflow-y:auto clip
+    const rect = input.getBoundingClientRect();
+    dropdown.style.top = (rect.bottom + 3) + 'px';
+    dropdown.style.left = rect.left + 'px';
+    dropdown.style.width = rect.width + 'px';
     dropdown.innerHTML = results.map((c, i) =>
       `<div class="autocomplete-item" data-idx="${i}" onclick="pickCity('${c.replace(/'/g, "\\'")}')"> ${c}</div>`
     ).join('');
