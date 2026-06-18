@@ -526,8 +526,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   </main>
 </div>
 
+<script src="cities-de.js"></script>
 <script>
-// ===== CITY AUTOCOMPLETE via Photon (OpenStreetMap) =====
+// ===== CITY AUTOCOMPLETE (offline, bundled German cities list) =====
 
 const TOTAL = 10;
 let step = 1;
@@ -646,58 +647,56 @@ acDropdown.className = 'autocomplete-dropdown';
 document.body.appendChild(acDropdown);
 
 let acHighlighted = -1;
-let acDebounce = null;
 
 function onCityInput() {
   const q = document.getElementById('stadtInput').value.trim();
   answered[8] = q.length > 1;
   if (step === 8) updateBtn();
-  clearTimeout(acDebounce);
   if (q.length < 2) { closeAc(); return; }
-  acDebounce = setTimeout(() => fetchCities(q), 250);
+  showCities(q);
 }
 
-async function fetchCities(q) {
+// Local search over the bundled German cities list (no external API).
+const acMajorRank = {};
+(window.DE_MAJOR || []).forEach((c, i) => { acMajorRank[c.toLowerCase()] = i; });
+
+function showCities(q) {
   const input = document.getElementById('stadtInput');
-  try {
-    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&lang=de&limit=8&countrycodes=de`;
-    const res = await fetch(url);
-    const json = await res.json();
-    const seen = new Set();
-    const results = (json.features || [])
-      .map(f => {
-        const p = f.properties;
-        // Only show cities/towns/villages
-        if (!['city','town','village','district','borough'].includes(p.osm_value) &&
-            !['city','town','village','district','borough'].includes(p.type)) return null;
-        const label = p.city || p.name;
-        const state = p.state || '';
-        return label ? [label, state].filter(Boolean).join(', ') : null;
-      })
-      .filter(v => v && !seen.has(v) && seen.add(v));
+  const cities = window.DE_CITIES || [];
+  const ql = q.toLowerCase();
 
-    if (!results.length) { closeAc(); return; }
-
-    const rect = input.getBoundingClientRect();
-    acDropdown.style.top    = (rect.bottom + 3) + 'px';
-    acDropdown.style.left   = rect.left + 'px';
-    acDropdown.style.width  = rect.width + 'px';
-    acDropdown.innerHTML = results.map((c, i) =>
-      `<div class="autocomplete-item" data-idx="${i}">${c}</div>`
-    ).join('');
-    acDropdown.classList.add('open');
-    acHighlighted = -1;
-
-    acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
-      item.addEventListener('mousedown', e => {
-        e.preventDefault(); // keep focus on input
-        pickCity(item.textContent.trim());
-      });
-    });
-  } catch(err) {
-    console.error('City autocomplete error:', err);
-    closeAc();
+  // Prefix matches first, then substring matches.
+  const starts = [], contains = [];
+  for (let i = 0; i < cities.length; i++) {
+    const c = cities[i];
+    const cl = c.toLowerCase();
+    if (cl.startsWith(ql)) starts.push(c);
+    else if (cl.includes(ql)) contains.push(c);
   }
+  // Rank: major cities first (by population), then alphabetically. So "b" → Berlin,
+  // "mün" → München before Münchberg.
+  const rank = c => (c.toLowerCase() in acMajorRank) ? acMajorRank[c.toLowerCase()] : 1e6;
+  starts.sort((a, b) => rank(a) - rank(b) || a.localeCompare(b, 'de'));
+  const results = starts.concat(contains).slice(0, 8);
+
+  if (!results.length) { closeAc(); return; }
+
+  const rect = input.getBoundingClientRect();
+  acDropdown.style.top   = (rect.bottom + 3) + 'px';
+  acDropdown.style.left  = rect.left + 'px';
+  acDropdown.style.width = rect.width + 'px';
+  acDropdown.innerHTML = results.map((c, i) =>
+    `<div class="autocomplete-item" data-idx="${i}">${c}</div>`
+  ).join('');
+  acDropdown.classList.add('open');
+  acHighlighted = -1;
+
+  acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+    item.addEventListener('mousedown', e => {
+      e.preventDefault(); // keep focus on input
+      pickCity(item.textContent.trim());
+    });
+  });
 }
 
 function pickCity(city) {
