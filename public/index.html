@@ -43,6 +43,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .sidebar-footer { margin-top: auto; padding: 16px 20px 4px; font-size: 10.5px; color: #b0bfcc; line-height: 1.6; }
 .sidebar-footer a { color: #b0bfcc; text-decoration: none; }
 .sidebar-footer a:hover { color: #7a90a8; }
+.mobile-footer-links { display: none; }
 
 /* ── Main ── */
 .main { flex: 1; min-width: 0; background: #fff; display: flex; flex-direction: column; height: 720px; overflow: hidden; }
@@ -154,6 +155,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   .question { font-size: 17px; }
   .phone-link { display: none; }
   .step-counter { display: block; }
+  .mobile-footer-links { display: block; padding: 8px 18px 14px; font-size: 11px; color: #b0bfcc; text-align: center; background: #fff; flex-shrink: 0; }
+  .mobile-footer-links a { color: #b0bfcc; text-decoration: none; }
 }
 </style>
 </head>
@@ -451,6 +454,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="sticky-footer" id="stickyFooter">
       <button class="btn-next" id="mainBtn" onclick="handleNext()">Weiter →</button>
     </div>
+    <div class="mobile-footer-links">© 2026 Docia GmbH &nbsp;·&nbsp; <a href="/impressum.html">Impressum</a> &nbsp;·&nbsp; <a href="/datenschutz.html">Datenschutz</a></div>
   </main>
 </div>
 
