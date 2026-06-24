@@ -2,167 +2,99 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Docia – Karriere in der Medizin</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; color: #0d2d5e; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
 
-/* ===== SHELL ===== */
 .shell {
   display: flex;
-  min-height: 100vh;
-  max-width: 1060px;
-  margin: 0 auto;
-  background: #fff;
-  border-left: 0.5px solid #d0dcea;
-  border-right: 0.5px solid #d0dcea;
+  height: 720px;
+  width: 960px;
+  max-width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 0.5px solid #d0dcea;
+  box-shadow: 0 12px 48px rgba(13,45,94,0.10);
 }
 
-/* ===== SIDEBAR ===== */
+/* ── Sidebar ── */
 .sidebar {
-  width: 190px;
+  width: 200px;
   flex-shrink: 0;
   background: #fff;
   border-right: 0.5px solid #d0dcea;
-  padding: 20px 0;
+  padding: 24px 0;
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 0;
-  height: 100vh;
   overflow-y: auto;
 }
-.sidebar-logo {
-  padding: 0 18px 20px;
-  font-size: 20px;
-  font-weight: 700;
-  color: #0d2d5e;
-  letter-spacing: -0.5px;
-}
-.sidebar-logo span { color: #2a7de1; }
-
-.nav-group-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #9aabbd;
-  padding: 0 18px 6px;
-  margin-top: 6px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 18px;
-  font-size: 12px;
-  color: #7a90a8;
-  cursor: default;
-}
-.nav-item.active { color: #0d2d5e; font-weight: 500; }
+.logo { padding: 0 20px 24px; font-size: 22px; font-weight: 700; color: #0d2d5e; letter-spacing: -0.5px; }
+.logo span { color: #2a7de1; }
+.nav-group { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #9aabbd; padding: 0 20px 6px; margin-top: 8px; }
+.nav-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px; font-size: 12.5px; color: #7a90a8; }
+.nav-item.active { color: #0d2d5e; font-weight: 600; }
 .nav-item.done { color: #2a7de1; }
 .nav-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 6px; }
-.nav-badge {
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 1px solid #c8d8ee;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; color: #7a90a8; flex-shrink: 0;
-}
-.nav-item.active .nav-badge { border-color: #0d2d5e; color: #0d2d5e; }
+.nav-badge { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #c8d8ee; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #7a90a8; flex-shrink: 0; }
+.nav-item.active .nav-badge { border-color: #0d2d5e; color: #0d2d5e; font-weight: 700; }
 .nav-item.done .nav-badge { border-color: #2a7de1; background: #2a7de1; color: #fff; }
 
-/* ===== MAIN ===== */
-.main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+/* ── Main ── */
+.main { flex: 1; min-width: 0; background: #fff; display: flex; flex-direction: column; height: 720px; overflow: hidden; }
+.prog-wrap { height: 3px; background: #e6f1fb; flex-shrink: 0; }
+.prog-fill { height: 3px; background: #2a7de1; transition: width 0.35s ease; }
 
-.progress-wrap { height: 3px; background: #e6f1fb; flex-shrink: 0; }
-.progress-fill { height: 3px; background: #2a7de1; transition: width 0.3s ease; }
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 28px 12px;
-  flex-shrink: 0;
-}
-.back-btn {
-  background: #e8edf4; border: none; cursor: pointer;
-  color: #0d2d5e; font-size: 13px; padding: 7px 14px;
-  border-radius: 20px; font-weight: 500; font-family: inherit;
-  transition: background 0.15s;
-}
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 18px 32px 12px; flex-shrink: 0; }
+.back-btn { background: #e8edf4; border: none; cursor: pointer; color: #0d2d5e; font-size: 13px; padding: 7px 16px; border-radius: 20px; font-weight: 500; font-family: inherit; transition: background 0.15s; }
 .back-btn:hover { background: #d0dcea; }
 .phone-link { font-size: 12px; color: #2a7de1; text-decoration: none; }
+.step-counter { font-size: 12px; color: #7a90a8; display: none; }
 
-.advisor-strip {
-  display: flex; align-items: center; gap: 12px;
-  padding: 0 28px 14px;
-  flex-shrink: 0;
-}
-.advisor-avatar {
-  width: 48px; height: 48px; border-radius: 50%;
-  background: #e6f1fb;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 600; color: #185fa5;
-  flex-shrink: 0; border: 2px solid #c8ddf5;
-}
-.advisor-name { font-size: 13px; font-weight: 500; color: #0d2d5e; }
-.advisor-role { font-size: 11px; color: #7a90a8; margin-top: 1px; }
+.advisor-strip { display: flex; align-items: center; gap: 12px; padding: 0 32px 16px; flex-shrink: 0; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; background: #e6f1fb; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #185fa5; flex-shrink: 0; border: 2px solid #c8ddf5; }
+.advisor-name { font-size: 13px; font-weight: 600; color: #0d2d5e; }
+.advisor-role { font-size: 11px; color: #7a90a8; margin-top: 2px; }
 
-.scroll-area { flex: 1; overflow-y: auto; padding: 0 28px 0; }
+.scroll-area { flex: 1; overflow-y: auto; padding: 0 32px 8px; }
+.sticky-footer { padding: 12px 32px 22px; background: #fff; border-top: 0.5px solid #eef2f7; flex-shrink: 0; display: flex; justify-content: flex-end; }
 
-.question { font-size: 18px; font-weight: 700; color: #0d2d5e; margin-bottom: 4px; line-height: 1.3; }
-.question-hint { font-size: 12px; color: #7a90a8; margin-bottom: 16px; }
+/* ── Button states ── */
+.btn-next { border: none; border-radius: 9px; padding: 12px 32px; font-size: 13.5px; font-weight: 600; font-family: inherit; cursor: pointer; white-space: nowrap; transition: background 0.2s, color 0.2s; background: #d8e2ef; color: #8fa3bb; }
+.btn-next.active { background: #0d2d5e; color: #fff; }
+.btn-next.active:hover { background: #185fa5; }
+.btn-next.blue { background: #2a7de1; color: #fff; }
+.btn-next.blue:hover { background: #1a6acf; }
+.btn-next:disabled { opacity: 0.7; cursor: not-allowed; }
 
-/* ===== TILES ===== */
-.tiles { display: grid; gap: 8px; margin-bottom: 12px; }
-.tiles.cols2 { grid-template-columns: repeat(2, 1fr); }
-.tiles.cols3 { grid-template-columns: repeat(3, 1fr); }
-.tiles.cols4 { grid-template-columns: repeat(4, 1fr); }
-.tile {
-  padding: 12px 10px; border: 0.5px solid #c8d8ee; border-radius: 7px;
-  font-size: 12.5px; color: #0d2d5e; cursor: pointer; text-align: center;
-  transition: border-color 0.12s, background 0.12s; background: #fff;
-  line-height: 1.35; user-select: none; word-break: break-word;
-}
+/* ── Content ── */
+.question { font-size: 19px; font-weight: 700; color: #0d2d5e; margin-bottom: 4px; line-height: 1.3; }
+.hint { font-size: 12px; color: #7a90a8; margin-bottom: 16px; }
+
+/* ── Tiles ── */
+.tiles { display: grid; gap: 9px; margin-bottom: 12px; }
+.tiles.c2 { grid-template-columns: repeat(2, 1fr); }
+.tiles.c3 { grid-template-columns: repeat(3, 1fr); }
+.tiles.c4 { grid-template-columns: repeat(4, 1fr); }
+.tiles.c3lang { grid-template-columns: repeat(3, 1fr); }
+
+.tile { padding: 13px 10px; border: 0.5px solid #c8d8ee; border-radius: 8px; font-size: 12.5px; color: #0d2d5e; cursor: pointer; text-align: center; transition: border-color 0.12s, background 0.12s; background: #fff; line-height: 1.35; user-select: none; word-break: break-word; }
 .tile:hover { border-color: #2a7de1; background: #f2f7fe; }
-.tile.selected { border: 1.5px solid #2a7de1; background: #e6f1fb; font-weight: 500; }
+.tile.sel { border: 1.5px solid #2a7de1; background: #e6f1fb; font-weight: 600; }
 
-/* ===== EMP TILES ===== */
-.emp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-.emp-tile { padding: 13px 12px; border: 0.5px solid #c8d8ee; border-radius: 7px; cursor: pointer; transition: border-color 0.12s, background 0.12s; background: #fff; user-select: none; }
-.emp-tile:hover { border-color: #2a7de1; background: #f2f7fe; }
-.emp-tile.selected { border: 1.5px solid #2a7de1; background: #e6f1fb; }
-.emp-tile-title { font-size: 13px; font-weight: 500; color: #0d2d5e; margin-bottom: 2px; }
-.emp-tile-sub { font-size: 11px; color: #7a90a8; }
-
-.section-label { font-size: 11px; font-weight: 500; color: #4a6380; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; margin-top: 4px; }
-
-/* ===== FORM ===== */
-.form-row { display: grid; gap: 10px; margin-bottom: 12px; }
-.form-row.cols2 { grid-template-columns: 1fr 1fr; }
-.form-label { font-size: 11px; font-weight: 500; color: #4a6380; text-transform: uppercase; letter-spacing: 0.04em; display: block; margin-bottom: 4px; }
-.form-input {
-  padding: 10px 12px; border: 0.5px solid #c8d8ee; border-radius: 7px;
-  font-size: 13px; color: #0d2d5e; background: #fff; outline: none;
-  font-family: inherit; width: 100%;
-}
+/* ── Form ── */
+.form-label { font-size: 10.5px; font-weight: 600; color: #4a6380; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 5px; }
+.form-input { padding: 11px 13px; border: 0.5px solid #c8d8ee; border-radius: 8px; font-size: 13.5px; color: #0d2d5e; background: #fff; outline: none; font-family: inherit; width: 100%; }
 .form-input:focus { border-color: #2a7de1; box-shadow: 0 0 0 3px #e6f1fb; }
 .form-input.error { border-color: #ef4444; }
 .field-error { font-size: 11px; color: #ef4444; margin-top: 3px; display: none; }
 .field-error.show { display: block; }
+.input-wrap { position: relative; }
+.input-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
+.form-input.padded { padding-left: 34px; }
 
-.input-icon-wrap { position: relative; }
-.input-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
-.form-input.padded { padding-left: 30px; }
-
-/* ===== AUTOCOMPLETE ===== */
-.autocomplete-wrap { position: relative; }
+/* ── Autocomplete ── */
 .autocomplete-dropdown {
   position: fixed;
   background: #fff; border: 0.5px solid #c8d8ee; border-radius: 7px;
@@ -173,78 +105,52 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .autocomplete-item { padding: 10px 12px; font-size: 13px; cursor: pointer; color: #0d2d5e; }
 .autocomplete-item:hover, .autocomplete-item.highlighted { background: #f2f7fe; }
 
-/* ===== TRUST BADGE ===== */
-.trust-badge {
-  display: flex; align-items: flex-start; gap: 10px;
-  background: #f4f8ff; border: 0.5px solid #c8ddf5; border-radius: 8px;
-  padding: 12px 14px; margin-top: 6px; margin-bottom: 4px;
-}
+/* ── Emp tiles ── */
+.emp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 14px; }
+.emp-tile { padding: 14px 13px; border: 0.5px solid #c8d8ee; border-radius: 8px; cursor: pointer; background: #fff; user-select: none; transition: border-color 0.12s, background 0.12s; }
+.emp-tile:hover { border-color: #2a7de1; background: #f2f7fe; }
+.emp-tile.sel { border: 1.5px solid #2a7de1; background: #e6f1fb; }
+.emp-title { font-size: 13px; font-weight: 600; color: #0d2d5e; margin-bottom: 2px; }
+.emp-sub { font-size: 11px; color: #7a90a8; }
+
+.section-label { font-size: 10.5px; font-weight: 600; color: #4a6380; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; margin-top: 2px; }
+
+/* ── Trust badge ── */
+.trust-badge { display: flex; align-items: flex-start; gap: 10px; background: #f4f8ff; border: 0.5px solid #c8ddf5; border-radius: 9px; padding: 13px 15px; margin-top: 8px; }
 .trust-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-.trust-text { font-size: 11.5px; color: #4a6380; line-height: 1.55; }
+.trust-text { font-size: 12px; color: #4a6380; line-height: 1.6; }
 
-.privacy-note { font-size: 11px; color: #7a90a8; line-height: 1.5; margin-bottom: 10px; }
-.privacy-note a { color: #2a7de1; cursor: pointer; }
-
-/* ===== STICKY FOOTER ===== */
-.sticky-footer {
-  padding: 12px 28px 20px; background: #fff;
-  border-top: 0.5px solid #eef2f7; flex-shrink: 0;
-  display: flex; justify-content: flex-end;
-}
-.btn-next {
-  border: none; border-radius: 8px;
-  padding: 11px 28px; font-size: 13px; font-weight: 500; cursor: pointer;
-  white-space: nowrap; transition: background 0.2s, color 0.2s;
-  font-family: inherit;
-  background: #d8e2ef; color: #8fa3bb;
-}
-.btn-next.active { background: #0d2d5e; color: #fff; }
-.btn-next.active:hover { background: #185fa5; }
-.btn-next.blue-active { background: #2a7de1; color: #fff; }
-.btn-next.blue-active:hover { background: #1a6acf; }
-.btn-next:disabled { opacity: 0.7; cursor: not-allowed; }
-
-/* ===== SCREENS ===== */
+/* ── Screens ── */
 .screen { display: none; }
 .screen.active { display: block; }
 
-/* ===== SUCCESS ===== */
-.success-wrap {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; text-align: center; padding: 60px 20px;
-}
-.success-icon-wrap {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: #e6f1fb; border: 2px solid #c8ddf5;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; color: #2a7de1; margin: 0 auto 20px;
-}
-.success-title { font-size: 20px; font-weight: 700; color: #0d2d5e; margin-bottom: 10px; }
-.success-sub { font-size: 13px; color: #4a6380; max-width: 340px; line-height: 1.7; }
-.success-advisor {
-  display: flex; align-items: center; gap: 12px;
-  margin-top: 28px; padding: 14px 18px;
-  background: #f4f8ff; border: 0.5px solid #c8ddf5; border-radius: 10px;
-  max-width: 340px;
-}
-.success-advisor-name { font-size: 13px; font-weight: 500; color: #0d2d5e; }
-.success-advisor-role { font-size: 11px; color: #7a90a8; margin-top: 2px; }
+/* ── Success ── */
+.success-wrap { padding: 40px 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.success-circle { width: 76px; height: 76px; border-radius: 50%; background: #e6f1fb; border: 2px solid #c8ddf5; display: flex; align-items: center; justify-content: center; font-size: 30px; color: #2a7de1; margin-bottom: 20px; }
+.success-title { font-size: 22px; font-weight: 700; color: #0d2d5e; margin-bottom: 10px; }
+.success-sub { font-size: 13.5px; color: #4a6380; max-width: 380px; line-height: 1.75; margin-bottom: 28px; }
+.success-card { display: flex; align-items: center; gap: 14px; background: #f4f8ff; border: 0.5px solid #c8ddf5; border-radius: 12px; padding: 16px 20px; max-width: 340px; text-align: left; }
+.success-card-name { font-size: 13px; font-weight: 600; color: #0d2d5e; }
+.success-card-role { font-size: 11px; color: #7a90a8; margin-top: 3px; line-height: 1.4; }
 
-/* ===== MOBILE ===== */
+/* ── Mobile ── */
 @media (max-width: 767px) {
-  body { background: #fff; }
-  .shell { border: none; max-width: 100%; flex-direction: column; }
+  body { background: #fff; padding: 0; align-items: flex-start; }
+  .shell { height: auto; min-height: 100vh; width: 100%; border-radius: 0; border: none; box-shadow: none; flex-direction: column; }
   .sidebar { display: none; }
+  .main { height: auto; min-height: 100vh; }
   .topbar { padding: 10px 18px 8px; }
   .advisor-strip { padding: 0 18px 14px; }
-  .advisor-avatar { width: 42px; height: 42px; font-size: 13px; }
-  .scroll-area { padding: 0 18px 0; }
-  .sticky-footer { padding: 12px 18px 20px; }
-  .btn-next { width: 100%; }
-  .tiles.cols3 { grid-template-columns: repeat(2, 1fr); }
-  .tiles.cols4 { grid-template-columns: repeat(2, 1fr); }
+  .advisor-avatar, .avatar { width: 42px; height: 42px; font-size: 13px; }
+  .scroll-area { padding: 0 18px 8px; }
+  .sticky-footer { padding: 12px 18px 22px; justify-content: stretch; }
+  .btn-next { width: 100%; padding: 15px; font-size: 15px; border-radius: 13px; }
+  .tiles.c3 { grid-template-columns: repeat(2, 1fr); }
+  .tiles.c3lang { grid-template-columns: repeat(3, 1fr); }
+  .tiles.c4 { grid-template-columns: repeat(2, 1fr); }
   .question { font-size: 17px; }
-  .form-row.cols2 { grid-template-columns: 1fr 1fr; }
+  .phone-link { display: none; }
+  .step-counter { display: block; }
 }
 </style>
 </head>
@@ -277,36 +183,37 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 <div class="shell">
 
-  <!-- SIDEBAR -->
+  <!-- Sidebar -->
   <nav class="sidebar">
-    <div class="sidebar-logo">Doc<span>ia</span></div>
-    <div class="nav-group-label">Qualifikation</div>
+    <div class="logo">Doc<span>ia</span></div>
+    <div class="nav-group">Qualifikation</div>
     <div class="nav-item" id="nav1"><span class="nav-label">Einrichtung</span><span class="nav-badge" id="nb1">1</span></div>
     <div class="nav-item" id="nav2"><span class="nav-label">Position</span><span class="nav-badge" id="nb2">2</span></div>
     <div class="nav-item" id="nav3"><span class="nav-label">Fachgebiet</span><span class="nav-badge" id="nb3">3</span></div>
-    <div class="nav-group-label" style="margin-top:8px">Zulassung</div>
+    <div class="nav-group" style="margin-top:8px">Zulassung</div>
     <div class="nav-item" id="nav4"><span class="nav-label">Approbation</span><span class="nav-badge" id="nb4">4</span></div>
     <div class="nav-item" id="nav5"><span class="nav-label">Studium</span><span class="nav-badge" id="nb5">5</span></div>
     <div class="nav-item" id="nav6"><span class="nav-label">Sprachniveau</span><span class="nav-badge" id="nb6">6</span></div>
     <div class="nav-item" id="nav7"><span class="nav-label">Fachsprachprüfung</span><span class="nav-badge" id="nb7">7</span></div>
-    <div class="nav-group-label" style="margin-top:8px">Präferenzen</div>
+    <div class="nav-group" style="margin-top:8px">Präferenzen</div>
     <div class="nav-item" id="nav8"><span class="nav-label">Standort</span><span class="nav-badge" id="nb8">8</span></div>
     <div class="nav-item" id="nav9"><span class="nav-label">Beschäftigung</span><span class="nav-badge" id="nb9">9</span></div>
-    <div class="nav-group-label" style="margin-top:8px">Konto</div>
+    <div class="nav-group" style="margin-top:8px">Konto</div>
     <div class="nav-item" id="nav10"><span class="nav-label">Registrieren</span><span class="nav-badge" id="nb10">10</span></div>
   </nav>
 
-  <!-- MAIN -->
+  <!-- Main -->
   <main class="main">
-    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:10%"></div></div>
 
     <div class="topbar">
       <button class="back-btn" onclick="goBack()">‹ Zurück</button>
       <a class="phone-link" href="tel:+4916247913">📞 +49 162 47913...</a>
+      <span class="step-counter" id="stepCounter">Schritt 1 von 10</span>
     </div>
 
     <div class="advisor-strip">
-      <div class="advisor-avatar">AL</div>
+      <div class="avatar">AL</div>
       <div>
         <div class="advisor-name">Anna Liebig</div>
         <div class="advisor-role">Docia Karriereberaterin</div>
@@ -318,16 +225,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 1: Einrichtung -->
       <div class="screen active" id="screen1">
         <div class="question">Welche Einrichtung bevorzugen Sie?</div>
-        <div class="question-hint">Mehrfachauswahl möglich</div>
-        <div class="tiles cols3" id="t1">
-          <div class="tile" onclick="toggleMulti(this,1)">Krankenhaus</div>
+        <div class="hint">Mehrfachauswahl möglich</div>
+        <div class="tiles c3" id="t1">
+          <div class="tile" onclick="toggleMulti(this,1)">Krankenhaus / Fachklinik</div>
           <div class="tile" onclick="toggleMulti(this,1)">Universitätsklinikum</div>
-          <div class="tile" onclick="toggleMulti(this,1)">MVZ</div>
-          <div class="tile" onclick="toggleMulti(this,1)">Facharztpraxis</div>
+          <div class="tile" onclick="toggleMulti(this,1)">MVZ (Medizinisches Versorgungszentrum)</div>
           <div class="tile" onclick="toggleMulti(this,1)">Gemeinschaftspraxis</div>
           <div class="tile" onclick="toggleMulti(this,1)">Rehabilitationsklinik</div>
+          <div class="tile" onclick="toggleMulti(this,1)">Facharztpraxis / Einzelpraxis</div>
           <div class="tile" onclick="toggleMulti(this,1)">Privatklinik</div>
-          <div class="tile" onclick="toggleMulti(this,1)">Medizinisches Versorgungszentrum</div>
           <div class="tile" onclick="toggleMulti(this,1)">Egal</div>
         </div>
       </div>
@@ -335,31 +241,29 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 2: Position -->
       <div class="screen" id="screen2">
         <div class="question">Welche Position suchen Sie?</div>
-        <div class="question-hint">Mehrfachauswahl möglich</div>
-        <div class="tiles cols3" id="t2">
-          <div class="tile" onclick="toggleMulti(this,2)">Assistenzarzt/-ärztin</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Facharzt/-ärztin</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Oberarzt/-ärztin</div>
+        <div class="hint">Mehrfachauswahl möglich</div>
+        <div class="tiles c3" id="t2">
+          <div class="tile" onclick="toggleMulti(this,2)">Assistenzarzt / Arzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Facharzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Oberarzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Honorararzt / Vertretungsarzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Angestellter Arzt (Praxis/MVZ)</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Leitender Oberarzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Praktisches Jahr (PJ) / Famulatur</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Sektionsleiter</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Stationsarzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Amtsarzt</div>
           <div class="tile" onclick="toggleMulti(this,2)">Chefarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Stationsarzt/-ärztin</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Sektionsleiter/in</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Leitender Arzt/-Ärztin</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Ärztlicher Direktor/-in</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Amtsarzt/-ärztin</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Arbeits-/Betriebsmediziner/in</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Gutachter/in</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Praxisabgabe</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Professor/in</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Famulatur</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Praktisches Jahr</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Gutachter</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Ärztlicher Direktor / Professor</div>
         </div>
       </div>
 
       <!-- 3: Fachgebiet -->
       <div class="screen" id="screen3">
         <div class="question">In welchem Fachgebiet möchten Sie arbeiten?</div>
-        <div class="question-hint">Mehrfachauswahl möglich</div>
-        <div class="tiles cols3" id="t3">
+        <div class="hint">Mehrfachauswahl möglich</div>
+        <div class="tiles c3" id="t3">
           <div class="tile" onclick="toggleMulti(this,3)">Allgemeinmedizin</div>
           <div class="tile" onclick="toggleMulti(this,3)">Innere Medizin</div>
           <div class="tile" onclick="toggleMulti(this,3)">Chirurgie</div>
@@ -380,43 +284,45 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 4: Approbation -->
       <div class="screen" id="screen4">
         <div class="question">Verfügen Sie über eine deutsche Approbation?</div>
-        <div class="question-hint">Bitte wählen Sie Ihren aktuellen Status</div>
-        <div class="tiles cols2" id="t4">
+        <div class="hint">Bitte wählen Sie Ihren aktuellen Status</div>
+        <div class="tiles c2" id="t4">
           <div class="tile" onclick="selectSingle(this,'t4',4);setApprob('full')">Approbation erteilt (DE)</div>
-          <div class="tile" onclick="selectSingle(this,'t4',4);setApprob('limited')">Berufserlaubnis (limited)</div>
+          <div class="tile" onclick="selectSingle(this,'t4',4);setApprob('limited')">Berufserlaubnis (§ 10 BÄO)</div>
           <div class="tile" onclick="selectSingle(this,'t4',4);setApprob('pending')">In Anerkennung</div>
           <div class="tile" onclick="selectSingle(this,'t4',4);setApprob('none')">Noch kein Antrag</div>
         </div>
       </div>
 
-      <!-- 5: Studium -->
+      <!-- 5: Studium (skipped if Approbation erteilt DE) -->
       <div class="screen" id="screen5">
         <div class="question">Wo haben Sie Ihr Medizinstudium abgeschlossen?</div>
-        <div class="question-hint">Relevant für die Anerkennung Ihrer Qualifikation in Deutschland</div>
-        <div class="tiles cols3" id="t5">
+        <div class="hint">Relevant für die Anerkennung Ihrer Qualifikation in Deutschland</div>
+        <div class="tiles c3" id="t5">
           <div class="tile" onclick="selectSingle(this,'t5',5)">Deutschland</div>
           <div class="tile" onclick="selectSingle(this,'t5',5)">EU / EWR</div>
           <div class="tile" onclick="selectSingle(this,'t5',5)">Nicht-EU</div>
         </div>
       </div>
 
-      <!-- 6: Sprachniveau -->
+      <!-- 6: Sprachniveau (skipped if Approbation erteilt DE) -->
       <div class="screen" id="screen6">
         <div class="question">Welches Sprachniveau haben Sie aktuell?</div>
-        <div class="question-hint">Gemeint ist Ihr Deutschniveau nach der GER-Skala</div>
-        <div class="tiles cols4" id="t6">
+        <div class="hint">Ihr Deutschniveau nach der GER-Skala</div>
+        <div class="tiles c3lang" id="t6">
+          <div class="tile" onclick="selectSingle(this,'t6',6)">A2 oder niedriger</div>
           <div class="tile" onclick="selectSingle(this,'t6',6)">B1</div>
           <div class="tile" onclick="selectSingle(this,'t6',6)">B2</div>
           <div class="tile" onclick="selectSingle(this,'t6',6)">C1</div>
-          <div class="tile" onclick="selectSingle(this,'t6',6)">C2 / Muttersprache</div>
+          <div class="tile" onclick="selectSingle(this,'t6',6)">C2</div>
+          <div class="tile" onclick="selectSingle(this,'t6',6)">Muttersprache</div>
         </div>
       </div>
 
-      <!-- 7: Fachsprachprüfung -->
+      <!-- 7: Fachsprachprüfung (skipped if Approbation erteilt DE) -->
       <div class="screen" id="screen7">
         <div class="question">Haben Sie bereits eine Fachsprachprüfung bestanden?</div>
-        <div class="question-hint">Die FSP ist Voraussetzung für die Berufserlaubnis in Deutschland</div>
-        <div class="tiles cols3" id="t7">
+        <div class="hint">Voraussetzung für die Berufserlaubnis in Deutschland</div>
+        <div class="tiles c3" id="t7">
           <div class="tile" onclick="selectSingle(this,'t7',7)">Ja</div>
           <div class="tile" onclick="selectSingle(this,'t7',7)">Nein</div>
           <div class="tile" onclick="selectSingle(this,'t7',7)">Geplant</div>
@@ -426,10 +332,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 8: Standort -->
       <div class="screen" id="screen8">
         <div class="question">In welcher Stadt möchten Sie arbeiten?</div>
-        <div class="question-hint">Wir suchen passende Stellen in Ihrer Nähe</div>
+        <div class="hint">Wir suchen passende Stellen in Ihrer Nähe</div>
         <div style="margin-bottom:14px">
           <label class="form-label">Ihre Stadt</label>
-          <div class="autocomplete-wrap input-icon-wrap">
+          <div class="input-wrap">
             <span class="input-icon">📍</span>
             <input class="form-input padded" id="stadtInput" type="text"
               placeholder="Stadt oder PLZ eingeben" autocomplete="off"
@@ -441,27 +347,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 9: Beschäftigung -->
       <div class="screen" id="screen9">
         <div class="question">Welche Beschäftigungsart suchen Sie?</div>
-        <div class="question-hint">Mehrfachauswahl möglich</div>
+        <div class="hint">Mehrfachauswahl möglich</div>
         <div class="emp-grid" id="empGrid">
           <div class="emp-tile" onclick="toggleEmp(this)">
-            <div class="emp-tile-title">Vollzeit</div>
-            <div class="emp-tile-sub">Unbefristet oder befristet</div>
+            <div class="emp-title">Vollzeit</div>
+            <div class="emp-sub">Unbefristet oder befristet</div>
           </div>
           <div class="emp-tile" onclick="toggleEmp(this)">
-            <div class="emp-tile-title">Teilzeit</div>
-            <div class="emp-tile-sub">Flexible Stundenzahl</div>
+            <div class="emp-title">Teilzeit</div>
+            <div class="emp-sub">Flexible Stundenzahl</div>
           </div>
           <div class="emp-tile" onclick="toggleEmp(this)">
-            <div class="emp-tile-title">Honorararzt</div>
-            <div class="emp-tile-sub">Freiberuflich / Locum</div>
+            <div class="emp-title">Honorararzt</div>
+            <div class="emp-sub">Freiberuflich / Locum</div>
           </div>
           <div class="emp-tile" onclick="toggleEmp(this)">
-            <div class="emp-tile-title">Vertretung / Zeitarbeit</div>
-            <div class="emp-tile-sub">Kurzfristige Einsätze</div>
+            <div class="emp-title">Vertretung / Zeitarbeit</div>
+            <div class="emp-sub">Kurzfristige Einsätze</div>
           </div>
         </div>
         <div class="section-label">Frühestes Startdatum</div>
-        <div class="tiles cols4" id="t9b">
+        <div class="tiles c4" id="t9b">
           <div class="tile" onclick="selectSingle(this,'t9b',9)">Sofort</div>
           <div class="tile" onclick="selectSingle(this,'t9b',9)">1–3 Monate</div>
           <div class="tile" onclick="selectSingle(this,'t9b',9)">3–6 Monate</div>
@@ -472,8 +378,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- 10: Registrieren -->
       <div class="screen" id="screen10">
         <div class="question">Fast geschafft – legen Sie Ihr Konto an</div>
-        <div class="question-hint">Ihre Angaben werden sicher gespeichert</div>
-        <div class="form-row cols2" style="margin-bottom:10px">
+        <div class="hint">Ihre Angaben werden sicher gespeichert</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="form-label">Vorname</label>
             <input class="form-input" id="vornameInput" type="text" placeholder="z.B. Maria" oninput="checkReg()" />
@@ -502,7 +408,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           </label>
           <div class="field-error" id="consentDatenschutzError" style="margin-left:25px;">Bitte stimmen Sie zu, um fortzufahren.</div>
         </div>
-        <div style="margin-bottom:12px">
+        <div style="margin-bottom:10px">
           <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
             <input type="checkbox" id="consentNutzung" onchange="checkReg()" style="margin-top:3px;flex-shrink:0;accent-color:#2a7de1;width:15px;height:15px;" />
             <span style="font-size:11.5px;color:#4a6380;line-height:1.55;">
@@ -520,14 +426,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <!-- Success -->
       <div class="screen" id="screenSuccess">
         <div class="success-wrap">
-          <div class="success-icon-wrap">✓</div>
+          <div class="success-circle">✓</div>
           <div class="success-title">Willkommen bei Docia!</div>
           <div class="success-sub">Ihr Profil wurde erfolgreich erstellt. Schon bald meldet sich einer unserer Karriereberater bei Ihnen, um gemeinsam die Stelle zu finden, die am besten zu Ihnen passt.</div>
-          <div class="success-advisor">
-            <div class="advisor-avatar" style="width:42px;height:42px;font-size:13px">AL</div>
+          <div class="success-card">
+            <div class="avatar">AL</div>
             <div>
-              <div class="success-advisor-name">Anna Liebig</div>
-              <div class="success-advisor-role">Docia Karriereberaterin — meldet sich bald bei Ihnen</div>
+              <div class="success-card-name">Anna Liebig</div>
+              <div class="success-card-role">Docia Karriereberaterin — meldet sich bald bei Ihnen</div>
             </div>
           </div>
         </div>
@@ -543,45 +449,42 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 <script src="cities-de.js"></script>
 <script>
-// ===== CITY AUTOCOMPLETE (offline, bundled German cities list) =====
-
 const TOTAL = 10;
 let step = 1;
-let skipStudium = false;
+let skipZulassung = false; // skip steps 5, 6, 7 when Approbation erteilt (DE)
 let approbStatus = '';
 const answered = {};
 
-// Collected data
-const data = {
-  einrichtung: [], position: [], fachgebiet: [],
-  approbation: '', studium: '', sprachniveau: '',
-  fachsprachpruefung: '', stadt: '', beschaeftigung: [], startdatum: '',
-  vorname: '', nachname: '', email: '', telefon: ''
-};
+// ===== ROUTING =====
+function getVisible() {
+  const s = [1,2,3,4];
+  if (!skipZulassung) s.push(5, 6, 7);
+  return s.concat([8, 9, 10]);
+}
 
 // ===== NAV =====
 function updateNav() {
+  const vis = getVisible();
+  const curPos = vis.indexOf(step);
   for (let i = 1; i <= TOTAL; i++) {
     const el = document.getElementById('nav' + i);
     const badge = document.getElementById('nb' + i);
     if (!el) continue;
+    const pos = vis.indexOf(i);
     el.className = 'nav-item';
-    if (i < step) { el.classList.add('done'); badge.innerHTML = '✓'; }
+    if (skipZulassung && [5,6,7].includes(i)) {
+      el.style.opacity = '0.35';
+    } else {
+      el.style.opacity = '';
+    }
+    if (pos >= 0 && pos < curPos) { el.classList.add('done'); badge.innerHTML = '✓'; }
     else if (i === step) { el.classList.add('active'); badge.innerHTML = i; }
     else { badge.innerHTML = i; }
-    if (i === 5 && skipStudium) el.style.opacity = '0.35';
-    else el.style.opacity = '';
   }
-  const visible = getVisible();
-  const idx = visible.indexOf(step);
-  const pct = Math.round(((idx + 1) / visible.length) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-}
-
-function getVisible() {
-  const s = [1,2,3,4];
-  if (!skipStudium) s.push(5);
-  return s.concat([6,7,8,9,10]);
+  const pct = Math.round(((curPos + 1) / vis.length) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  const sc = document.getElementById('stepCounter');
+  if (sc) sc.textContent = 'Schritt ' + (curPos + 1) + ' von ' + vis.length;
 }
 
 function updateBtn() {
@@ -589,7 +492,7 @@ function updateBtn() {
   const ok = answered[step];
   if (step === TOTAL) {
     btn.textContent = 'Jetzt registrieren →';
-    btn.className = 'btn-next' + (ok ? ' blue-active' : '');
+    btn.className = 'btn-next' + (ok ? ' blue' : '');
   } else {
     btn.textContent = 'Weiter →';
     btn.className = 'btn-next' + (ok ? ' active' : '');
@@ -624,17 +527,17 @@ function handleNext() {
 
 // ===== TILE INTERACTIONS =====
 function toggleMulti(el, s) {
-  el.classList.toggle('selected');
-  answered[s] = !!el.closest('.tiles').querySelector('.selected');
+  el.classList.toggle('sel');
+  answered[s] = !!el.closest('.tiles').querySelector('.sel');
   if (step === s) updateBtn();
 }
 
 function selectSingle(el, gid, s) {
-  document.getElementById(gid).querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
-  el.classList.add('selected');
+  document.getElementById(gid).querySelectorAll('.tile').forEach(t => t.classList.remove('sel'));
+  el.classList.add('sel');
   if (s === 9) {
-    answered[9] = !!(document.getElementById('empGrid').querySelector('.selected') &&
-                     document.getElementById('t9b').querySelector('.selected'));
+    answered[9] = !!(document.getElementById('empGrid').querySelector('.sel') &&
+                     document.getElementById('t9b').querySelector('.sel'));
     if (step === 9) updateBtn();
   } else {
     markAnswered(s);
@@ -643,19 +546,17 @@ function selectSingle(el, gid, s) {
 
 function setApprob(v) {
   approbStatus = v;
-  skipStudium = (v === 'full');
-  if (skipStudium) data.studium = '';
+  skipZulassung = (v === 'full');
 }
 
 function toggleEmp(el) {
-  el.classList.toggle('selected');
-  answered[9] = !!(document.getElementById('empGrid').querySelector('.selected') &&
-                   document.getElementById('t9b').querySelector('.selected'));
+  el.classList.toggle('sel');
+  answered[9] = !!(document.getElementById('empGrid').querySelector('.sel') &&
+                   document.getElementById('t9b').querySelector('.sel'));
   if (step === 9) updateBtn();
 }
 
-// ===== CITY AUTOCOMPLETE =====
-// Dropdown lives on <body> to escape all scroll/overflow containers
+// ===== CITY AUTOCOMPLETE (offline, bundled German cities list) =====
 const acDropdown = document.createElement('div');
 acDropdown.id = 'stadtDropdown';
 acDropdown.className = 'autocomplete-dropdown';
@@ -671,7 +572,6 @@ function onCityInput() {
   showCities(q);
 }
 
-// Local search over the bundled German cities list (no external API).
 const acMajorRank = {};
 (window.DE_MAJOR || []).forEach((c, i) => { acMajorRank[c.toLowerCase()] = i; });
 
@@ -679,8 +579,6 @@ function showCities(q) {
   const input = document.getElementById('stadtInput');
   const cities = window.DE_CITIES || [];
   const ql = q.toLowerCase();
-
-  // Prefix matches first, then substring matches.
   const starts = [], contains = [];
   for (let i = 0; i < cities.length; i++) {
     const c = cities[i];
@@ -688,14 +586,10 @@ function showCities(q) {
     if (cl.startsWith(ql)) starts.push(c);
     else if (cl.includes(ql)) contains.push(c);
   }
-  // Rank: major cities first (by population), then alphabetically. So "b" → Berlin,
-  // "mün" → München before Münchberg.
   const rank = c => (c.toLowerCase() in acMajorRank) ? acMajorRank[c.toLowerCase()] : 1e6;
   starts.sort((a, b) => rank(a) - rank(b) || a.localeCompare(b, 'de'));
   const results = starts.concat(contains).slice(0, 8);
-
   if (!results.length) { closeAc(); return; }
-
   const rect = input.getBoundingClientRect();
   acDropdown.style.top   = (rect.bottom + 3) + 'px';
   acDropdown.style.left  = rect.left + 'px';
@@ -705,10 +599,9 @@ function showCities(q) {
   ).join('');
   acDropdown.classList.add('open');
   acHighlighted = -1;
-
   acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
     item.addEventListener('mousedown', e => {
-      e.preventDefault(); // keep focus on input
+      e.preventDefault();
       pickCity(item.textContent.trim());
     });
   });
@@ -716,7 +609,6 @@ function showCities(q) {
 
 function pickCity(city) {
   document.getElementById('stadtInput').value = city;
-  data.stadt = city;
   answered[8] = true;
   if (step === 8) updateBtn();
   closeAc();
@@ -729,9 +621,8 @@ function closeAc() {
 }
 
 document.addEventListener('keydown', e => {
-  const dropdown = document.getElementById('stadtDropdown');
-  if (!dropdown.classList.contains('open')) return;
-  const items = dropdown.querySelectorAll('.autocomplete-item');
+  if (!acDropdown.classList.contains('open')) return;
+  const items = acDropdown.querySelectorAll('.autocomplete-item');
   if (e.key === 'ArrowDown') {
     acHighlighted = Math.min(acHighlighted + 1, items.length - 1);
     items.forEach((it, i) => it.classList.toggle('highlighted', i === acHighlighted));
@@ -790,8 +681,6 @@ async function doSubmit() {
   const email = document.getElementById('emailInput').value.trim();
   const telefon = document.getElementById('telefonInput').value.trim();
 
-  let valid = true;
-
   if (!vorname || !nachname) { alert('Bitte geben Sie Vor- und Nachname ein.'); return; }
 
   const cd = document.getElementById('consentDatenschutz').checked;
@@ -800,6 +689,7 @@ async function doSubmit() {
   document.getElementById('consentNutzungError').classList.toggle('show', !cn);
   if (!cd || !cn) return;
 
+  let valid = true;
   const emailOk = email.includes('@') && email.indexOf('.', email.indexOf('@')) > 0;
   document.getElementById('emailInput').classList.toggle('error', !emailOk);
   document.getElementById('emailError').classList.toggle('show', !emailOk);
@@ -812,17 +702,16 @@ async function doSubmit() {
 
   if (!valid) return;
 
-  // Collect from DOM
-  const einrichtung = [...document.getElementById('t1').querySelectorAll('.selected')].map(e => e.textContent);
-  const position = [...document.getElementById('t2').querySelectorAll('.selected')].map(e => e.textContent);
-  const fachgebiet = [...document.getElementById('t3').querySelectorAll('.selected')].map(e => e.textContent);
-  const approbation = document.getElementById('t4').querySelector('.selected')?.textContent || '';
-  const studium = skipStudium ? '' : (document.getElementById('t5').querySelector('.selected')?.textContent || '');
-  const sprachniveau = document.getElementById('t6').querySelector('.selected')?.textContent || '';
-  const fachsprachpruefung = document.getElementById('t7').querySelector('.selected')?.textContent || '';
-  const stadt = document.getElementById('stadtInput').value.trim();
-  const beschaeftigung = [...document.getElementById('empGrid').querySelectorAll('.selected')].map(e => e.querySelector('.emp-tile-title').textContent);
-  const startdatum = document.getElementById('t9b').querySelector('.selected')?.textContent || '';
+  const einrichtung = [...document.getElementById('t1').querySelectorAll('.sel')].map(e => e.textContent);
+  const position    = [...document.getElementById('t2').querySelectorAll('.sel')].map(e => e.textContent);
+  const fachgebiet  = [...document.getElementById('t3').querySelectorAll('.sel')].map(e => e.textContent);
+  const approbation = document.getElementById('t4').querySelector('.sel')?.textContent || '';
+  const studium     = skipZulassung ? '' : (document.getElementById('t5').querySelector('.sel')?.textContent || '');
+  const sprachniveau    = skipZulassung ? '' : (document.getElementById('t6').querySelector('.sel')?.textContent || '');
+  const fachsprachpruefung = skipZulassung ? '' : (document.getElementById('t7').querySelector('.sel')?.textContent || '');
+  const stadt       = document.getElementById('stadtInput').value.trim();
+  const beschaeftigung = [...document.getElementById('empGrid').querySelectorAll('.sel')].map(e => e.querySelector('.emp-title').textContent);
+  const startdatum  = document.getElementById('t9b').querySelector('.sel')?.textContent || '';
 
   const btn = document.getElementById('mainBtn');
   btn.disabled = true;
@@ -861,12 +750,13 @@ function showSuccess() {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screenSuccess').classList.add('active');
   document.getElementById('stickyFooter').style.display = 'none';
-  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('prog').style.width = '100%';
   for (let i = 1; i <= TOTAL; i++) {
     const el = document.getElementById('nav' + i);
     const badge = document.getElementById('nb' + i);
     if (!el) continue;
     el.className = 'nav-item done';
+    el.style.opacity = '';
     badge.innerHTML = '✓';
   }
 }
