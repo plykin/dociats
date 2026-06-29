@@ -275,8 +275,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="hint">Mehrfachauswahl möglich</div>
         <div class="tiles c3" id="t3">
           <div class="tile" onclick="toggleMulti(this,3)">Allgemeinmedizin</div>
-          <div class="tile" onclick="toggleParent(this,'sub-innere',3)">Innere Medizin</div>
-          <div class="tile" onclick="toggleParent(this,'sub-chirurgie',3)">Chirurgie</div>
+          <div class="tile" onclick="toggleMulti(this,3)">Innere Medizin</div>
+          <div class="tile" onclick="toggleMulti(this,3)">Chirurgie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Anästhesie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Pädiatrie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Gynäkologie</div>
@@ -292,34 +292,40 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <div class="tile" onclick="toggleMulti(this,3)">Arbeitsmedizin</div>
           <div class="tile" onclick="toggleMulti(this,3)">Sonstiges</div>
         </div>
+      </div>
+
+      <!-- 3b: Schwerpunkt (sub-specialty step, only shown if Innere Medizin / Chirurgie selected) -->
+      <div class="screen" id="screen3sub">
+        <div class="question">Welche Schwerpunkte interessieren Sie?</div>
+        <div class="hint">Mehrfachauswahl möglich – oder direkt weiter</div>
 
         <div class="subgroup" id="sub-innere">
           <div class="section-label">Schwerpunkt Innere Medizin</div>
           <div class="tiles c3">
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Gastroenterologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Kardiologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Pneumologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Nephrologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Hämatologie / Onkologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Endokrinologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Rheumatologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Angiologie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Infektiologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Gastroenterologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Kardiologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Pneumologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Nephrologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Hämatologie / Onkologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Endokrinologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Rheumatologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Angiologie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Infektiologie</div>
           </div>
         </div>
 
         <div class="subgroup" id="sub-chirurgie">
           <div class="section-label">Schwerpunkt Chirurgie</div>
           <div class="tiles c3">
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Allgemeinchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Viszeralchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Unfallchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Neurochirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Thoraxchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Herzchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Gefäßchirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Plastische Chirurgie</div>
-            <div class="tile subtile" onclick="toggleMulti(this,3)">Kinderchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Allgemeinchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Viszeralchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Unfallchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Neurochirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Thoraxchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Herzchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Gefäßchirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Plastische Chirurgie</div>
+            <div class="tile subtile" onclick="toggleSub(this)">Kinderchirurgie</div>
           </div>
         </div>
       </div>
@@ -505,6 +511,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 const TOTAL = 10;
 let step = 1;
 let skipZulassung = false; // skip steps 5, 6, 7 when Approbation erteilt (DE)
+let inSub = false; // currently on the sub-specialty step (3b)
 let approbStatus = '';
 const answered = {};
 
@@ -542,6 +549,7 @@ function updateNav() {
 
 function updateBtn() {
   const btn = document.getElementById('mainBtn');
+  if (inSub) { btn.textContent = 'Weiter →'; btn.className = 'btn-next active'; return; }
   const ok = answered[step];
   if (step === TOTAL) {
     btn.textContent = 'Jetzt registrieren →';
@@ -564,15 +572,28 @@ function showScreen(n) {
 function goTo(n) { step = n; updateNav(); updateBtn(); showScreen(n); }
 
 function goBack() {
+  if (inSub) { inSub = false; goTo(3); return; }
   if (step <= 1) return;
   const vis = getVisible();
   const idx = vis.indexOf(step);
-  if (idx > 0) goTo(vis[idx - 1]);
+  if (idx > 0) {
+    const prev = vis[idx - 1];
+    if (prev === 3 && needsSub()) { enterSub(); return; }
+    goTo(prev);
+  }
 }
 
 function handleNext() {
+  if (inSub) {
+    inSub = false;
+    const vis = getVisible();
+    const idx = vis.indexOf(3);
+    goTo(vis[idx + 1]);
+    return;
+  }
   if (!answered[step]) return;
   if (step === TOTAL) { doSubmit(); return; }
+  if (step === 3 && needsSub()) { enterSub(); return; }
   const vis = getVisible();
   const idx = vis.indexOf(step);
   if (idx < vis.length - 1) goTo(vis[idx + 1]);
@@ -585,17 +606,28 @@ function toggleMulti(el, s) {
   if (step === s) updateBtn();
 }
 
-function toggleParent(el, panelId, s) {
-  el.classList.toggle('sel');
-  const panel = document.getElementById(panelId);
-  if (el.classList.contains('sel')) {
-    panel.classList.add('open');
-  } else {
-    panel.classList.remove('open');
-    panel.querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
-  }
-  answered[s] = !!document.getElementById('screen3').querySelector('.tile.sel');
-  if (step === s) updateBtn();
+// Sub-specialty step (3b) — shown after Fachgebiet if Innere Medizin / Chirurgie chosen
+function needsSub() {
+  const sel = [...document.getElementById('t3').querySelectorAll('.tile.sel')].map(t => t.textContent);
+  return sel.includes('Innere Medizin') || sel.includes('Chirurgie');
+}
+
+function enterSub() {
+  inSub = true;
+  const sel = [...document.getElementById('t3').querySelectorAll('.tile.sel')].map(t => t.textContent);
+  const innere = document.getElementById('sub-innere');
+  const chir = document.getElementById('sub-chirurgie');
+  innere.style.display = sel.includes('Innere Medizin') ? 'block' : 'none';
+  chir.style.display = sel.includes('Chirurgie') ? 'block' : 'none';
+  // clear sub-selections whose parent is no longer chosen
+  if (!sel.includes('Innere Medizin')) innere.querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
+  if (!sel.includes('Chirurgie')) chir.querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
+  showScreen('3sub');
+  updateBtn();
+}
+
+function toggleSub(el) {
+  el.classList.toggle('sel'); // optional selections; Weiter is always enabled on this step
 }
 
 function selectSingle(el, gid, s) {
@@ -771,7 +803,10 @@ async function doSubmit() {
 
   const einrichtung = [...document.getElementById('t1').querySelectorAll('.sel')].map(e => e.textContent);
   const position    = [...document.getElementById('t2').querySelectorAll('.sel')].map(e => e.textContent);
-  const fachgebiet  = [...document.getElementById('screen3').querySelectorAll('.tile.sel')].map(e => e.textContent);
+  const mainFach = [...document.getElementById('t3').querySelectorAll('.tile.sel')].map(e => e.textContent);
+  if (!mainFach.includes('Innere Medizin')) document.getElementById('sub-innere').querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
+  if (!mainFach.includes('Chirurgie')) document.getElementById('sub-chirurgie').querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
+  const fachgebiet  = [...document.querySelectorAll('#screen3 .tile.sel, #screen3sub .tile.sel')].map(e => e.textContent);
   const approbation = document.getElementById('t4').querySelector('.sel')?.textContent || '';
   const studium     = skipZulassung ? '' : (document.getElementById('t5').querySelector('.sel')?.textContent || '');
   const sprachniveau    = skipZulassung ? '' : (document.getElementById('t6').querySelector('.sel')?.textContent || '');
