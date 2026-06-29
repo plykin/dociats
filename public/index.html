@@ -137,6 +137,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .success-card-name { font-size: 13px; font-weight: 600; color: #0d2d5e; }
 .success-card-role { font-size: 11px; color: #7a90a8; margin-top: 3px; line-height: 1.4; }
 
+/* ── Sub-specialty groups ── */
+.subgroup { display: none; margin-top: 14px; padding-top: 4px; border-top: 0.5px solid #eef2f7; animation: subFade 0.18s ease; }
+.subgroup.open { display: block; }
+.subtile { font-size: 13px; }
+@keyframes subFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
 /* ── Mobile ── */
 @media (max-width: 767px) {
   body { background: #fff; padding: 0; align-items: flex-start; }
@@ -176,6 +182,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <input type="text" name="stadt" />
   <input type="text" name="beschaeftigung" />
   <input type="text" name="startdatum" />
+  <input type="text" name="titel" />
   <input type="text" name="vorname" />
   <input type="text" name="nachname" />
   <input type="email" name="email" />
@@ -240,9 +247,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <div class="tile" onclick="toggleMulti(this,1)">Krankenhaus / Fachklinik</div>
           <div class="tile" onclick="toggleMulti(this,1)">Universitätsklinikum</div>
           <div class="tile" onclick="toggleMulti(this,1)">MVZ (Medizinisches Versorgungszentrum)</div>
-          <div class="tile" onclick="toggleMulti(this,1)">Gemeinschaftspraxis</div>
+          <div class="tile" onclick="toggleMulti(this,1)">Praxis (ambulant)</div>
           <div class="tile" onclick="toggleMulti(this,1)">Rehabilitationsklinik</div>
-          <div class="tile" onclick="toggleMulti(this,1)">Facharztpraxis / Einzelpraxis</div>
           <div class="tile" onclick="toggleMulti(this,1)">Privatklinik</div>
           <div class="tile" onclick="toggleMulti(this,1)">Egal</div>
         </div>
@@ -253,19 +259,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="question">Welche Position suchen Sie?</div>
         <div class="hint">Mehrfachauswahl möglich</div>
         <div class="tiles c3" id="t2">
-          <div class="tile" onclick="toggleMulti(this,2)">Assistenzarzt / Arzt</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Assistenzarzt</div>
           <div class="tile" onclick="toggleMulti(this,2)">Facharzt</div>
           <div class="tile" onclick="toggleMulti(this,2)">Oberarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Honorararzt / Vertretungsarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Angestellter Arzt (Praxis/MVZ)</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Leitender Oberarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Praktisches Jahr (PJ) / Famulatur</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Sektionsleiter</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Stationsarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Amtsarzt</div>
           <div class="tile" onclick="toggleMulti(this,2)">Chefarzt</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Gutachter</div>
-          <div class="tile" onclick="toggleMulti(this,2)">Ärztlicher Direktor / Professor</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Ärztlicher Direktor</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Praxisübernahme</div>
+          <div class="tile" onclick="toggleMulti(this,2)">Famulator / PJ</div>
         </div>
       </div>
 
@@ -275,19 +275,52 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="hint">Mehrfachauswahl möglich</div>
         <div class="tiles c3" id="t3">
           <div class="tile" onclick="toggleMulti(this,3)">Allgemeinmedizin</div>
-          <div class="tile" onclick="toggleMulti(this,3)">Innere Medizin</div>
-          <div class="tile" onclick="toggleMulti(this,3)">Chirurgie</div>
+          <div class="tile" onclick="toggleParent(this,'sub-innere',3)">Innere Medizin</div>
+          <div class="tile" onclick="toggleParent(this,'sub-chirurgie',3)">Chirurgie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Anästhesie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Pädiatrie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Gynäkologie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Psychiatrie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Neurologie</div>
+          <div class="tile" onclick="toggleMulti(this,3)">Orthopädie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Radiologie</div>
+          <div class="tile" onclick="toggleMulti(this,3)">Nuklearmedizin</div>
           <div class="tile" onclick="toggleMulti(this,3)">Dermatologie</div>
           <div class="tile" onclick="toggleMulti(this,3)">HNO</div>
           <div class="tile" onclick="toggleMulti(this,3)">Augenheilkunde</div>
+          <div class="tile" onclick="toggleMulti(this,3)">Geriatrie</div>
           <div class="tile" onclick="toggleMulti(this,3)">Arbeitsmedizin</div>
           <div class="tile" onclick="toggleMulti(this,3)">Sonstiges</div>
+        </div>
+
+        <div class="subgroup" id="sub-innere">
+          <div class="section-label">Schwerpunkt Innere Medizin</div>
+          <div class="tiles c3">
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Gastroenterologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Kardiologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Pneumologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Nephrologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Hämatologie / Onkologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Endokrinologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Rheumatologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Angiologie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Infektiologie</div>
+          </div>
+        </div>
+
+        <div class="subgroup" id="sub-chirurgie">
+          <div class="section-label">Schwerpunkt Chirurgie</div>
+          <div class="tiles c3">
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Allgemeinchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Viszeralchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Unfallchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Neurochirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Thoraxchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Herzchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Gefäßchirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Plastische Chirurgie</div>
+            <div class="tile subtile" onclick="toggleMulti(this,3)">Kinderchirurgie</div>
+          </div>
         </div>
       </div>
 
@@ -389,6 +422,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
       <div class="screen" id="screen10">
         <div class="question">Fast geschafft – legen Sie Ihr Konto an</div>
         <div class="hint">Ihre Angaben werden sicher gespeichert</div>
+        <div style="margin-bottom:12px">
+          <label class="form-label">Titel (optional)</label>
+          <select class="form-input" id="titelInput">
+            <option value="">Kein Titel</option>
+            <option value="Dr. med.">Dr. med.</option>
+            <option value="Dr. Dr. med.">Dr. Dr. med.</option>
+            <option value="Prof. Dr. med.">Prof. Dr. med.</option>
+          </select>
+        </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <label class="form-label">Vorname</label>
@@ -539,7 +581,20 @@ function handleNext() {
 // ===== TILE INTERACTIONS =====
 function toggleMulti(el, s) {
   el.classList.toggle('sel');
-  answered[s] = !!el.closest('.tiles').querySelector('.sel');
+  answered[s] = !!document.getElementById('screen' + s).querySelector('.tile.sel');
+  if (step === s) updateBtn();
+}
+
+function toggleParent(el, panelId, s) {
+  el.classList.toggle('sel');
+  const panel = document.getElementById(panelId);
+  if (el.classList.contains('sel')) {
+    panel.classList.add('open');
+  } else {
+    panel.classList.remove('open');
+    panel.querySelectorAll('.tile.sel').forEach(t => t.classList.remove('sel'));
+  }
+  answered[s] = !!document.getElementById('screen3').querySelector('.tile.sel');
   if (step === s) updateBtn();
 }
 
@@ -687,6 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== SUBMIT =====
 async function doSubmit() {
+  const titel = document.getElementById('titelInput').value;
   const vorname = document.getElementById('vornameInput').value.trim();
   const nachname = document.getElementById('nachnameInput').value.trim();
   const email = document.getElementById('emailInput').value.trim();
@@ -715,7 +771,7 @@ async function doSubmit() {
 
   const einrichtung = [...document.getElementById('t1').querySelectorAll('.sel')].map(e => e.textContent);
   const position    = [...document.getElementById('t2').querySelectorAll('.sel')].map(e => e.textContent);
-  const fachgebiet  = [...document.getElementById('t3').querySelectorAll('.sel')].map(e => e.textContent);
+  const fachgebiet  = [...document.getElementById('screen3').querySelectorAll('.tile.sel')].map(e => e.textContent);
   const approbation = document.getElementById('t4').querySelector('.sel')?.textContent || '';
   const studium     = skipZulassung ? '' : (document.getElementById('t5').querySelector('.sel')?.textContent || '');
   const sprachniveau    = skipZulassung ? '' : (document.getElementById('t6').querySelector('.sel')?.textContent || '');
@@ -736,7 +792,7 @@ async function doSubmit() {
       fachgebiet: fachgebiet.join(', '), approbation, studium,
       sprachniveau, fachsprachpruefung, stadt,
       beschaeftigung: beschaeftigung.join(', '), startdatum,
-      vorname, nachname, email, telefon,
+      titel, vorname, nachname, email, telefon,
       consent_datenschutz: 'true',
       consent_nutzungsbedingungen: 'true',
       consent_timestamp: new Date().toISOString(),
