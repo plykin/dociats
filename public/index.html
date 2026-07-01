@@ -57,7 +57,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .step-counter { font-size: 12px; color: #7a90a8; display: none; }
 
 .advisor-strip { display: flex; align-items: center; gap: 12px; padding: 0 32px 16px; flex-shrink: 0; }
-.avatar { width: 50px; height: 50px; border-radius: 50%; background: #e6f1fb; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #185fa5; flex-shrink: 0; border: 2px solid #c8ddf5; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; background: #e6f1fb; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #185fa5; flex-shrink: 0; border: 2px solid #c8ddf5; overflow: hidden; }
+.avatar-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: none; }
+.avatar.has-img { background: none; }
+.avatar.has-img .avatar-img { display: block; }
+.avatar.has-img .avatar-init { display: none; }
 .advisor-name { font-size: 13px; font-weight: 600; color: #0d2d5e; }
 .advisor-role { font-size: 11px; color: #7a90a8; margin-top: 2px; }
 
@@ -230,7 +234,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
 
     <div class="advisor-strip">
-      <div class="avatar">AL</div>
+      <div class="avatar"><img class="avatar-img" src="/anna.jpg" alt="Anna Liebig" onload="this.parentElement.classList.add('has-img')" onerror="this.remove()"><span class="avatar-init">AL</span></div>
       <div>
         <div class="advisor-name">Anna Liebig</div>
         <div class="advisor-role">Docia Karriereberaterin</div>
@@ -486,7 +490,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <div class="success-title">Willkommen bei Docia!</div>
           <div class="success-sub">Ihr Profil wurde erfolgreich erstellt. Schon bald meldet sich einer unserer Karriereberater bei Ihnen, um gemeinsam die Stelle zu finden, die am besten zu Ihnen passt.</div>
           <div class="success-card">
-            <div class="avatar">AL</div>
+            <div class="avatar"><img class="avatar-img" src="/anna.jpg" alt="Anna Liebig" onload="this.parentElement.classList.add('has-img')" onerror="this.remove()"><span class="avatar-init">AL</span></div>
             <div>
               <div class="success-card-name">Anna Liebig</div>
               <div class="success-card-role">Docia Karriereberaterin — meldet sich bald bei Ihnen</div>
